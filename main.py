@@ -1,4 +1,3 @@
-
 '''
 conn = sqlite3.connect('clash.db')
 c = conn.cursor()
@@ -92,13 +91,15 @@ else:
     bearer = 'CLASH_HAX_BEARER'
     BOT_TOKEN = os.getenv('BOT_TOKEN_AWAY')
 
-POSTGRES_INFO = {'database': os.getenv("DATABASE"), 'user': os.getenv("USERR"), 'password': os.getenv("PASSWORD"), 'host': os.getenv("HOST")}
+POSTGRES_INFO = {'database': os.getenv("DATABASE"), 'user': os.getenv("USERR"), 'password': os.getenv("PASSWORD"),
+                 'host': os.getenv("HOST")}
 
 headers = {
     'Content-Type': 'application/json',
     'Accepted': 'application/json',
     'authorization': 'Bearer ' + bearer
 }
+
 
 def get_role(id):
     id = id[1:]
@@ -128,11 +129,13 @@ def get_clan_tag(id):
     user_json = response.json();
     return user_json['clan']['tag']
 
+
 def get_attacks_won(id):
     id = id[1:]
     response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
     user_json = response.json();
     return user_json['attackWins']
+
 
 def get_defenses_won(id):
     id = id[1:]
@@ -140,17 +143,20 @@ def get_defenses_won(id):
     user_json = response.json();
     return user_json['defenseWins']
 
+
 def get_highest_trophies(id):
     id = id[1:]
     response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
     user_json = response.json();
     return user_json['bestTrophies']
 
+
 def get_bhall_tro(id):
     id = id[1:]
     response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
     user_json = response.json();
     return user_json['versusTrophies']
+
 
 def get_bhall_wins(id):
     id = id[1:]
@@ -171,6 +177,7 @@ def get_received(id):
     response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
     user_json = response.json();
     return user_json['donationsReceived']
+
 
 def get_clan_des(id):
     string = get_clan_tag(id)
@@ -280,17 +287,20 @@ def get_thall(id):
     user_json = response.json();
     return user_json['townHallLevel']
 
+
 def get_bhall(id):
     id = id[1:]
     response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
     user_json = response.json();
     return user_json['builderHallLevel']
 
+
 def get_highest_btro(id):
     id = id[1:]
     response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
     user_json = response.json();
     return user_json['bestVersusTrophies']
+
 
 def get_explvl(id):
     id = id[1:]
@@ -353,6 +363,7 @@ def get_heroes(id):
 
     return heroes
 
+
 def check_bm(id):
     id = id[1:]
     response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
@@ -364,6 +375,7 @@ def check_bm(id):
             bm = "<:bm:862948965129519134>" + '\t' + str(user_json['heroes'][x]['level'])
             break
     return bm
+
 
 def get_rc(id):
     id = id[1:]
@@ -378,7 +390,7 @@ def get_warlog():
     print(user_json2['name']);
 
 
-def get_dono(id,num):
+def get_dono(id, num):
     hello = get_clan_tag(id)
     hello = hello[1:]
     response = requests.get('https://api.clashofclans.com/v1/clans/%23' + hello + '/members', headers=headers)
@@ -386,7 +398,7 @@ def get_dono(id,num):
     test = member
     data = json.loads(json.dumps(test))
     dono = list(range(0, len(data['items'])))
-    #dono_2 = list(range(0,num))
+    # dono_2 = list(range(0,num))
     final = ""
     for i in range(len(dono)):
         max = i
@@ -405,11 +417,11 @@ def get_dono(id,num):
 def get_rank(num):
     string = ""
     for i in range(num):
-        string += "\n" + str(i+1)
+        string += "\n" + str(i + 1)
     return string
 
 
-def get_eachmember(id,num):
+def get_eachmember(id, num):
     hello = get_clan_tag(id)
     hello = hello[1:]
     response = requests.get('https://api.clashofclans.com/v1/clans/%23' + hello + '/members', headers=headers)
@@ -417,7 +429,7 @@ def get_eachmember(id,num):
     test = member
     data = json.loads(json.dumps(test))
     dono = list(range(0, len(data['items'])))
-    #dono_2 = list(range(0, num))
+    # dono_2 = list(range(0, num))
     final = ""
     for i in range(len(dono)):
         max = i
@@ -430,7 +442,7 @@ def get_eachmember(id,num):
     return final
 
 
-def get_rec(id,num):
+def get_rec(id, num):
     hello = get_clan_tag(id)
     hello = hello[1:]
     response = requests.get('https://api.clashofclans.com/v1/clans/%23' + hello + '/members', headers=headers)
@@ -438,7 +450,7 @@ def get_rec(id,num):
     test = member
     data = json.loads(json.dumps(test))
     dono = list(range(0, len(data['items'])))
-    #dono_2 = list(range(0, num))
+    # dono_2 = list(range(0, num))
     final = ""
     for i in range(len(dono)):
         max = i
@@ -449,6 +461,7 @@ def get_rec(id,num):
     for i in dono[:num]:
         final += "\n" + str(data['items'][i]["donationsReceived"])
     return final
+
 
 def get_bhall_emoji(tag):
     if get_bhall(tag) == 1:
@@ -470,6 +483,8 @@ def get_bhall_emoji(tag):
     else:
         bhall = "<:b9:862937488717119488>"
     return bhall
+
+
 def get_thall_emoji(tag):
     if get_thall(tag) == 1:
         thall = "<:Town_Hall1:819094243242672159>"
@@ -512,20 +527,22 @@ async def get_prefix(self, ctx):
 print('bruh why you not work')
 ########################GUGUGUGUGUGUGUGUGUGUGUGU#####################
 
-
 client = commands.Bot(command_prefix=get_prefix, help_command=None)
+
 
 @client.command()
 async def testing(ctx):
     await ctx.send("why you no work?")
 
-'''
+
 @client.event
 async def on_message(message):
-  channel = message.channel
-  if str(client.user.id) in message.content:
-    await channel.send("bruh")
-'''
+    async with client.pool.acquire() as connection:
+        async with connection.transaction():
+            if message.content == '<@&863560351281709097>' or message.content == '<@&837221636779278377>':
+                prefix = await connection.fetchval("SELECT prefix FROM servers WHERE serverid = $1", message.guild.id)
+                await message.channel.send('The prefix for this server is ' + prefix)
+    await client.process_commands(message)
 
 @client.event
 async def on_ready():
@@ -563,12 +580,14 @@ async def prefix(ctx, arg):
             await connection.execute("UPDATE servers SET prefix = $1 WHERE serverid = $2", arg, ctx.guild.id)
             await ctx.send("ClashHax prefix for this server has been changed to " + arg)
 
+
 @client.command()
 async def current_prefix(ctx):
     async with client.pool.acquire() as connection:
         async with connection.transaction():
             c_prefix = await connection.fetchval("SELECT prefix FROM servers WHERE serverid = $1", ctx.guild.id)
             await ctx.send("The prefix for this server is " + c_prefix)
+
 
 @client.command()
 async def link_clan(ctx):
@@ -615,19 +634,19 @@ async def unlink_clan(ctx):
 @client.command()
 async def link_help(ctx):
     embed = discord.Embed(title="Linking Help", color=0x4287f5)
-    embed.add_field(name='\u200b', value="\nPlease use the command `!link <in-game tag> <api token>`\nExample: `!link #YG2G8PVV 4ed32drw`", inline=False)
+    embed.add_field(name='\u200b',
+                    value="\nPlease use the command `!link <in-game tag> <api token>`\nExample: `!link #YG2G8PVV 4ed32drw`",
+                    inline=False)
 
-    embed.add_field(name='\nWhere to find in-game tag?',value="In the image below, the # with a series of letters is your player tag. Also, if you click the little arrow with a square, a pop up with a copy and share button will appear. Clicking copy, will copy your in-game tag to your clipboard. So now you can just paste it.")
+    embed.add_field(name='\nWhere to find in-game tag?',
+                    value="In the image below, the # with a series of letters is your player tag. Also, if you click the little arrow with a square, a pop up with a copy and share button will appear. Clicking copy, will copy your in-game tag to your clipboard. So now you can just paste it.")
     embed.set_image(url='https://cdn.discordapp.com/attachments/833745316401381419/862161173658206218/IMG_6506.PNG')
     await ctx.send(embed=embed)
     embed2 = discord.Embed(title="Linking Help Part 2", color=0x4287f5)
     embed2.add_field(name='\nWhere to find api token?',
-                    value="Go to account settings and then click more settings. Scroll to the bottom and you'll see the api token Click the show button to the left of it and either use the copy button or type it manually. API token also changes frequently, so if it doesn't work, check the api token again. In the image below, I've circled the api token.")
+                     value="Go to account settings and then click more settings. Scroll to the bottom and you'll see the api token Click the show button to the left of it and either use the copy button or type it manually. API token also changes frequently, so if it doesn't work, check the api token again. In the image below, I've circled the api token.")
     embed2.set_image(url='https://cdn.discordapp.com/attachments/833745316401381419/862172619552587796/IMG_6512_1.PNG')
     await ctx.send(embed=embed2)
-
-
-
 
 
 @client.command(aliases=['linked'])
@@ -651,9 +670,11 @@ async def link(ctx, tag, token):
 
                 await ctx.send(get_user(tag) + " has been linked to your discord account!")
             else:
-                await ctx.send("Please type in the correct format with the right info. If you need help linking your account, use this command `!link_help`")
+                await ctx.send(
+                    "Please type in the correct format with the right info. If you need help linking your account, use this command `!link_help`")
 
             await ctx.message.delete()
+
 
 @client.command()
 async def help(ctx):
@@ -668,25 +689,35 @@ async def player(ctx):
         async with connection.transaction():
             tag = await connection.fetchval("SELECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
             if tag is not None:
-                embed = discord.Embed(title=get_user(tag) + " (" + tag + ")", url ="https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23" + tag[
-                                                                                                                1:], color=0x4287f5)
+                embed = discord.Embed(title=get_user(tag) + " (" + tag + ")",
+                                      url="https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23" + tag[
+                                                                                                                1:],
+                                      color=0x4287f5)
                 if get_role(tag) == 'admin':
                     string = 'elder'
                 else:
                     string = get_role(tag)
-                des = get_thall_emoji(tag) + "\t" + str(get_thall(tag)) + "\t<:trophyy:841927127468605450>" + "\t" + str(
-                    get_trophies(tag)) + "\t:crossed_swords:" + "\t" + str(get_attacks_won(tag)) + "\t" + ":shield:" + "\t" + str(get_defenses_won(tag)) + "\n" + get_heroes(
+                des = get_thall_emoji(tag) + "\t" + str(
+                    get_thall(tag)) + "\t<:trophyy:841927127468605450>" + "\t" + str(
+                    get_trophies(tag)) + "\t:crossed_swords:" + "\t" + str(
+                    get_attacks_won(tag)) + "\t" + ":shield:" + "\t" + str(get_defenses_won(tag)) + "\n" + get_heroes(
                     tag) + "\nHighest Trophies: <:trophyy:841927127468605450>" + "\t" + str(get_highest_trophies(tag))
                 embed.add_field(name='Home Base Info', value=des, inline=False)
-                des = get_bhall_emoji(tag) + "\t" + str(get_bhall(tag)) + "\t<:btrophy:841926856760360970>" + "\t" + str(get_bhall_tro(tag)) + "\t" + ":crossed_swords:" + "\t" + str(get_bhall_wins(tag)) + "\t" + check_bm(tag) + "\nHighest Versus Trophies: <:btrophy:841926856760360970>" + "\t" + str(get_bhall_tro(tag))
+                des = get_bhall_emoji(tag) + "\t" + str(
+                    get_bhall(tag)) + "\t<:btrophy:841926856760360970>" + "\t" + str(
+                    get_bhall_tro(tag)) + "\t" + ":crossed_swords:" + "\t" + str(get_bhall_wins(tag)) + "\t" + check_bm(
+                    tag) + "\nHighest Versus Trophies: <:btrophy:841926856760360970>" + "\t" + str(get_bhall_tro(tag))
                 embed.add_field(name='Builder Base Info', value=des, inline=False)
                 des = "\n<:exp:819094248498266122>" + str(
-                    get_explvl(tag)) + "\t:star:" + str(get_warstars(tag)) + "\n" + "Donations: " + str(get_donations(tag)) + "\nReceived: " + str(get_received(tag)) + "\n" + string.capitalize() + " of " + get_clan_name(
+                    get_explvl(tag)) + "\t:star:" + str(get_warstars(tag)) + "\n" + "Donations: " + str(
+                    get_donations(tag)) + "\nReceived: " + str(
+                    get_received(tag)) + "\n" + string.capitalize() + " of " + get_clan_name(
                     tag)
                 embed.add_field(name='General', value=des, inline=False)
                 await ctx.send(embed=embed)
             else:
                 await ctx.send("Please use the link command first.")
+
 
 @client.command()
 async def unlink(ctx):
@@ -715,10 +746,13 @@ async def change_main(ctx, tag):
             if test is None:
                 await ctx.send("Please link the account first before using this command!")
             else:
-                val = await connection.fetchval("SELECT array_position(tag,$1) FROM players WHERE discordid = $2", tag, ctx.author.id)
+                val = await connection.fetchval("SELECT array_position(tag,$1) FROM players WHERE discordid = $2", tag,
+                                                ctx.author.id)
                 print(val)
-                await connection.execute("UPDATE players SET tag = array_remove(tag,tag[$1]) WHERE discordid = $2", val, ctx.author.id)
-                await connection.execute("UPDATE players SET tag = array_prepend($1,tag) WHERE discordid = $2", tag, ctx.author.id)
+                await connection.execute("UPDATE players SET tag = array_remove(tag,tag[$1]) WHERE discordid = $2", val,
+                                         ctx.author.id)
+                await connection.execute("UPDATE players SET tag = array_prepend($1,tag) WHERE discordid = $2", tag,
+                                         ctx.author.id)
                 await ctx.send("Your active account is now " + get_user(tag))
 
 
@@ -770,8 +804,9 @@ async def dono_board(ctx):
             else:
                 await ctx.send("Please use the link command first before using this command")
 
+
 @client.command()
-async def dono(ctx,*args):
+async def dono(ctx, *args):
     async with client.pool.acquire() as connection:
         async with connection.transaction():
             tag = await connection.fetchval("SElECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
@@ -779,7 +814,7 @@ async def dono(ctx,*args):
                 embed = discord.Embed(title='Donation Leaderboard', color=0x4287f5)
                 if len(args) == 0:
                     embed.add_field(name='Rank #', value=get_rank(10), inline=True)
-                    embed.add_field(name='Username', value=get_eachmember(tag,10), inline=True)
+                    embed.add_field(name='Username', value=get_eachmember(tag, 10), inline=True)
                     embed.add_field(name='Donated', value=get_dono(tag, 10), inline=True)
                 elif len(args) == 1:
                     if int(args[0]) > get_clan_mem(tag):
@@ -796,6 +831,8 @@ async def dono(ctx,*args):
                 await ctx.send(embed=embed)
             else:
                 await ctx.send("Please link your account first before using this command")
+
+
 @client.command()
 async def clan(ctx):
     start_time = time.time()
@@ -832,4 +869,3 @@ async def clan(ctx):
 loop = asyncio.get_event_loop()
 client.pool = loop.run_until_complete(asyncpg.create_pool(**POSTGRES_INFO))
 client.run(BOT_TOKEN)
-
