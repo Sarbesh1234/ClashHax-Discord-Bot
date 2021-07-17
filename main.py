@@ -67,7 +67,7 @@ conn.commit()
 
 conn.close()
 '''
-
+print('final testing')
 import asyncio
 import asyncpg
 import requests
