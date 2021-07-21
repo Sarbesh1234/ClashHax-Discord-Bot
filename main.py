@@ -93,7 +93,7 @@ else:
     bearer = 'CLASH_HAX_BEARER'
     BOT_TOKEN = os.getenv('BOT_TOKEN_AWAY')
     POSTGRES_INFO = {'database': os.getenv("DATABASE"), 'user': os.getenv("USERR"), 'password': os.getenv("PASSWORD"),
-                     'host': "local"}
+                     'host': "localhost"}
 
 
 print(os.getenv("DATABASE"))
