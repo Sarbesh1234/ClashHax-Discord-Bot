@@ -94,6 +94,10 @@ else:
 POSTGRES_INFO = {'database': os.getenv("DATABASE"), 'user': os.getenv("USERR"), 'password': os.getenv("PASSWORD"),
                  'host': os.getenv("HOST")}
 
+print(os.getenv("DATABASE"))
+print(os.getenv("USERR"))
+print(os.getenv("PASSWORD"))
+print(os.getenv("HOST"))
 headers = {
     'Content-Type': 'application/json',
     'Accepted': 'application/json',
