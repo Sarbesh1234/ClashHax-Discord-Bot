@@ -82,7 +82,7 @@ import socket
 
 hostname = socket.gethostname()
 ip_address = socket.gethostbyname(hostname)
-load_dotenv('.env')
+load_dotenv('discord.env')
 
 if ip_address == os.getenv('MY_IP'):
     bearer = os.getenv('CLASH_HAX_TESTING_BEARER')
