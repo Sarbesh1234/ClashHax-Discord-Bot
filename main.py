@@ -73,6 +73,7 @@ import requests
 import json
 import discord
 import time
+from discord.utils import find
 from dotenv import load_dotenv
 import os
 from discord.ext import commands
@@ -563,6 +564,11 @@ async def on_guild_join(guild):
     async with client.pool.acquire() as connection:
         async with connection.transaction():
             await connection.execute("INSERT INTO servers VALUES ($1,'!')", guild.id)
+    #general = find(lambda x: x.name == 'general', guild.text_channels)
+    #if general and general.permissions_for(guild.me).send_messages:
+        #await general.send('Hey! Thanks for inviting ClashHax discord bot to your server.\nUse !help to bring a list of commands')
+
+
 
 
 @client.event
@@ -578,14 +584,6 @@ async def prefix(ctx, arg):
         async with connection.transaction():
             await connection.execute("UPDATE servers SET prefix = $1 WHERE serverid = $2", arg, ctx.guild.id)
             await ctx.send("ClashHax prefix for this server has been changed to " + arg)
-
-
-@client.command()
-async def current_prefix(ctx):
-    async with client.pool.acquire() as connection:
-        async with connection.transaction():
-            c_prefix = await connection.fetchval("SELECT prefix FROM servers WHERE serverid = $1", ctx.guild.id)
-            await ctx.send("The prefix for this server is " + c_prefix)
 
 
 @client.command()
@@ -608,6 +606,9 @@ async def link_clan(ctx):
             else:
                 await ctx.send("Please use the link command before using this!")
 
+@client.command()
+async def invite(ctx):
+    await ctx.send("The invite link for this discord bot is https://discord.com/api/oauth2/authorize?client_id=815078901574795276&permissions=8&scope=bot")
 
 @client.command()
 async def unlink_clan(ctx):
@@ -677,7 +678,19 @@ async def link(ctx, tag, token):
 
 @client.command()
 async def help(ctx):
-    des = "`!link_help` • Gives specific information on how to link a clash of clans account to discord account"
+    des = """
+    `!` is the default prefix. Your server might have changed it, so ping the bot to find out your prefix\n
+    `!prefix <new prefix>` • Changes the prefix of the server to the new prefix\n
+    `!link <in-game tag> <api token>` • Links a clash of clans account to your discord account\n
+    `!link_help` • Gives specific information on how to use the link command\n
+    `!player` • Gives your in-game player information\n
+    `!change_active <in-game tag>` • Use this command to switch your active clash of clans account. Only applies to users with multiple clash accounts linked to their discord\n
+    `!clan` • Gives your in-game clan information\n
+    `!profile` • Gives all your clash of clan accounts linked to your discord\n
+    `!dono_board` • Gives donations and requests of all members in your clan\n
+    `!dono <number>` • The bot will give a top 'number' list of the best donors in your clan\n
+    `!unlink` • Unlinks your active clash of clans account from this discord account
+    """
     embed = discord.Embed(title="ClashHax Commands", description=des, color=0x4287f5)
     await ctx.send(embed=embed)
 
