@@ -87,12 +87,14 @@ load_dotenv('discord.env')
 if ip_address == os.getenv('MY_IP'):
     bearer = os.getenv('CLASH_HAX_TESTING_BEARER')
     BOT_TOKEN = os.getenv('BOT_TOKEN_HOME')
+    POSTGRES_INFO = {'database': os.getenv("DATABASE"), 'user': os.getenv("USERR"), 'password': os.getenv("PASSWORD"),
+                     'host': os.getenv("HOST")}
 else:
     bearer = 'CLASH_HAX_BEARER'
     BOT_TOKEN = os.getenv('BOT_TOKEN_AWAY')
+    POSTGRES_INFO = {'database': os.getenv("DATABASE"), 'user': os.getenv("USERR"), 'password': os.getenv("PASSWORD"),
+                     'host': "local"}
 
-POSTGRES_INFO = {'database': os.getenv("DATABASE"), 'user': os.getenv("USERR"), 'password': os.getenv("PASSWORD"),
-                 'host': os.getenv("HOST")}
 
 print(os.getenv("DATABASE"))
 print(os.getenv("USERR"))
@@ -882,6 +884,6 @@ async def clan(ctx):
                 await ctx.send("Please use the link command first before using this command")
 
 
-#loop = asyncio.get_event_loop()
-#client.pool = loop.run_until_complete(asyncpg.create_pool(**POSTGRES_INFO))
+loop = asyncio.get_event_loop()
+client.pool = loop.run_until_complete(asyncpg.create_pool(**POSTGRES_INFO))
 client.run(BOT_TOKEN)
