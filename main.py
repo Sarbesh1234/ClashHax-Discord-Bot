@@ -882,6 +882,6 @@ async def clan(ctx):
                 await ctx.send("Please use the link command first before using this command")
 
 
-loop = asyncio.get_event_loop()
-client.pool = loop.run_until_complete(asyncpg.create_pool(**POSTGRES_INFO))
+#loop = asyncio.get_event_loop()
+#client.pool = loop.run_until_complete(asyncpg.create_pool(**POSTGRES_INFO))
 client.run(BOT_TOKEN)
