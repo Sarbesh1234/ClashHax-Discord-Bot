@@ -90,7 +90,7 @@ if ip_address == os.getenv('MY_IP'):
     POSTGRES_INFO = {'database': os.getenv("DATABASE"), 'user': os.getenv("USERR"), 'password': os.getenv("PASSWORD"),
                      'host': os.getenv("HOST")}
 else:
-    bearer = 'CLASH_HAX_BEARER'
+    bearer = os.getenv('CLASH_HAX_BEARER')
     BOT_TOKEN = os.getenv('BOT_TOKEN_AWAY')
     POSTGRES_INFO = {'database': os.getenv("DATABASE"), 'user': os.getenv("USERR"), 'password': os.getenv("PASSWORD"),
                      'host': "localhost"}
