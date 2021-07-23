@@ -369,6 +369,23 @@ def get_heroes(id):
 
     return heroes
 
+def getheroes(json):
+    num = len(json['heroes'])
+
+    heroes = ''
+    for x in range(num):
+        if json['heroes'][x]['name'] == 'Barbarian King':
+            heroes += "<:BK:822687680915308586> " + str(json['heroes'][x]['level'])
+        elif json['heroes'][x]['name'] == 'Archer Queen':
+            heroes += " <:AQ:822687698413289512> " + str(json['heroes'][x]['level'])
+        elif json['heroes'][x]['name'] == 'Grand Warden':
+            heroes += " <:GW:822687710509531156> " + str(json['heroes'][x]['level'])
+        elif json['heroes'][x]['name'] == 'Royal Champion':
+            heroes += " <:RC:822687723848073227> " + str(json['heroes'][x]['level'])
+
+    return heroes
+
+
 
 def check_bm(id):
     id = id[1:]
@@ -491,37 +508,36 @@ def get_bhall_emoji(tag):
     return bhall
 
 
-def get_thall_emoji(tag):
-    if get_thall(tag) == 1:
+def get_thall_emoji(json):
+    if json['townHallLevel'] == 1:
         thall = "<:Town_Hall1:819094243242672159>"
-    elif get_thall(tag) == 2:
+    elif json['townHallLevel'] == 2:
         thall = "<:Town_Hall2:819094243444260874>"
-    elif get_thall(tag) == 3:
+    elif json['townHallLevel'] == 3:
         thall = "<:Town_Hall3:819094245549015060>"
-    elif get_thall(tag) == 4:
+    elif json['townHallLevel'] == 4:
         thall = "<:Town_Hall4:819094245402869781>"
-    elif get_thall(tag) == 5:
+    elif json['townHallLevel'] == 5:
         thall = "<:Town_Hall5:819094245671043112>"
-    elif get_thall(tag) == 6:
+    elif json['townHallLevel'] == 6:
         thall = "<:Town_Hall6:819094246769295370>"
-    elif get_thall(tag) == 7:
+    elif json['townHallLevel'] == 7:
         thall = "<:Town_Hall7:819094247365017600>"
-    elif get_thall(tag) == 8:
+    elif json['townHallLevel'] == 8:
         thall = "<:Town_Hall8:819094247260028948>"
-    elif get_thall(tag) == 9:
+    elif json['townHallLevel'] == 9:
         thall = "<:Town_Hall9:819094247583383552>"
-    elif get_thall(tag) == 10:
+    elif json['townHallLevel'] == 10:
         thall = "<:Town_Hall10:819094228000309248>"
-    elif get_thall(tag) == 11:
+    elif json['townHallLevel'] == 11:
         thall = "<:Town_Hall11:819094231087841310>"
-    elif get_thall(tag) == 12:
+    elif json['townHallLevel'] == 12:
         thall = "<:Town_Hall12:819094241660764200>"
-    elif get_thall(tag) == 13:
+    elif json['townHallLevel'] == 13:
         thall = "<:Town_Hall13:819094243536273461>"
     else:
         thall = "<:Town_Hall14:833756232375468032>"
     return thall
-
 
 async def get_prefix(self, ctx):
     async with client.pool.acquire() as connection:
@@ -538,7 +554,26 @@ client = commands.Bot(command_prefix=get_prefix, help_command=None)
 
 @client.command()
 async def testing(ctx):
-    await ctx.send("why you no work?")
+                start_time = time.time()
+                id = '#YG2G8PVV'
+                id = id[1:]
+                response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
+                user = response.json();
+                exp = user['expLevel']
+                war_stars = user['warStars']
+                trophies = user['trophies']
+                await ctx.send(exp + war_stars + trophies)
+                await ctx.send('Execution time:' + str(round(time.time() - start_time, 3)) + ' seconds')
+
+
+
+@client.command()
+async def testing2(ctx):
+    start_time = time.time()
+    tag = '#YG2G8PVV'
+    await ctx.send(str(get_explvl(tag)) + str(get_warstars(tag)) + str(get_trophies(tag)))
+    await ctx.send('Execution time:' + str(round(time.time() - start_time, 3)) + ' seconds')
+
 
 
 @client.event
@@ -787,23 +822,22 @@ async def profile(ctx):
             embed = discord.Embed(title="ClashHax Profile", color=0x4287f5)
             for i in range(1, size + 1):
                 tag = await connection.fetchval("SElECT tag[$1] FROM players WHERE discordid = $2", i, ctx.author.id)
-                if get_role(tag) == 'admin':
+                response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:], headers=headers)
+                user = response.json()
+                if user['role'] == 'admin':
                     string = 'elder'
                 else:
-                    string = get_role(tag)
-                des = "[" + get_user(
-                    tag) + '\t' + tag + "](https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23" + tag[
-                                                                                                                1:] + " \"In-Game Profile\")" + "\n<:exp:819094248498266122>" + str(
-                    get_explvl(tag)) + "   " + get_thall_emoji(tag) + "\t<:trophyy:841927127468605450>" + str(
-                    get_trophies(tag)) + "\t:star:" + str(get_warstars(tag)) + "\n" + get_heroes(
-                    tag) + "\n" + string.capitalize() + " of " + get_clan_name(
-                    tag) + '\n'
+                    string = user['role']
+                des = "[" + user['name'] + '\t' + tag + "](https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23" + tag[
+                                                                                                                1:] + " \"In-Game Profile\")" + "\n<:exp:819094248498266122>" + str(user['expLevel']) + "   " + get_thall_emoji(user) + "\t<:trophyy:841927127468605450>" + str(
+                    user['trophies']) + "\t:star:" + str(user['warStars']) + "\n" + getheroes(user) + "\n" + string.capitalize() + " of " + user['clan']['name'] + '\n'
                 if i == 1:
                     embed.add_field(name='\u200b', value="*ACTIVE*\n" + des, inline=False)
                 else:
                     embed.add_field(name='\u200b', value=des, inline=False)
                 embed.set_footer(text=str(round(time.time() - start_time, 3)) + ' seconds')
             await ctx.send(embed=embed)
+
 
 
 @client.command()
