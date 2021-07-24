@@ -263,7 +263,7 @@ def get_thall_emoji(json):
         thall = "<:Town_Hall14:833756232375468032>"
     return thall
 
-async def get_prefix(ctx):
+async def get_prefix(self,ctx):
     async with client.pool.acquire() as connection:
         async with connection.transaction():
             prefix = await connection.fetchval("SELECT prefix FROM servers WHERE serverid = $1", ctx.guild.id)
