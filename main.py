@@ -497,7 +497,7 @@ async def unlink(ctx):
 
 #complete
 @client.command()
-async def change_main(ctx, tag):
+async def change_active(ctx, tag):
     async with client.pool.acquire() as connection:
         async with connection.transaction():
             test = await connection.fetchval("SELECT * FROM players WHERE $1 = ANY(tag)", tag)
