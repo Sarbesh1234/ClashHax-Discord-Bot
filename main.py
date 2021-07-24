@@ -73,7 +73,6 @@ import requests
 import json
 import discord
 import time
-from discord.utils import find
 from dotenv import load_dotenv
 import os
 from discord.ext import commands
@@ -95,11 +94,6 @@ else:
     POSTGRES_INFO = {'database': os.getenv("DATABASE"), 'user': os.getenv("USERR"), 'password': os.getenv("PASSWORD"),
                      'host': "localhost"}
 
-
-print(os.getenv("DATABASE"))
-print(os.getenv("USERR"))
-print(os.getenv("PASSWORD"))
-print(os.getenv("HOST"))
 headers = {
     'Content-Type': 'application/json',
     'Accepted': 'application/json',
@@ -107,15 +101,7 @@ headers = {
 }
 
 
-def get_role(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['role']
-
-
 def link2(id, token):
-    # response = requests.post('https://api.clashofclans.com/v1/players/%23' + id + '/verifytoken',headers=headers)
     id = id[1:]
     params = {
         "token": token
@@ -127,247 +113,6 @@ def link2(id, token):
         return True
     else:
         return False
-
-
-def get_clan_tag(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['clan']['tag']
-
-
-def get_attacks_won(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['attackWins']
-
-
-def get_defenses_won(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['defenseWins']
-
-
-def get_highest_trophies(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['bestTrophies']
-
-
-def get_bhall_tro(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['versusTrophies']
-
-
-def get_bhall_wins(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['versusBattleWins']
-
-
-def get_donations(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['donations']
-
-
-def get_received(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['donationsReceived']
-
-
-def get_clan_des(id):
-    string = get_clan_tag(id)
-    string = string[1:]
-    response = requests.get('https://api.clashofclans.com/v1/clans/%23' + string, headers=headers)
-    json = response.json();
-    return json['description']
-
-
-def get_clan_tro(id):
-    string = get_clan_tag(id)
-    string = string[1:]
-    response = requests.get('https://api.clashofclans.com/v1/clans/%23' + string, headers=headers)
-    json = response.json();
-    return json['clanPoints']
-
-
-def get_clan_btro(id):
-    string = get_clan_tag(id)
-    string = string[1:]
-    response = requests.get('https://api.clashofclans.com/v1/clans/%23' + string, headers=headers)
-    json = response.json();
-    return json['clanVersusPoints']
-
-
-def get_clan_warwins(id):
-    string = get_clan_tag(id)
-    string = string[1:]
-    response = requests.get('https://api.clashofclans.com/v1/clans/%23' + string, headers=headers)
-    json = response.json();
-    return json['warWins']
-
-
-def get_clan_warleauge(id):
-    string = get_clan_tag(id)
-    string = string[1:]
-    response = requests.get('https://api.clashofclans.com/v1/clans/%23' + string, headers=headers)
-    json = response.json();
-    return json['warLeague']['name']
-
-
-def get_clan_warstreak(id):
-    string = get_clan_tag(id)
-    string = string[1:]
-    response = requests.get('https://api.clashofclans.com/v1/clans/%23' + string, headers=headers)
-    json = response.json();
-    return json['warWinStreak']
-
-
-def get_clan_location(id):
-    string = get_clan_tag(id)
-    string = string[1:]
-    response = requests.get('https://api.clashofclans.com/v1/clans/%23' + string, headers=headers)
-    json = response.json();
-    return json['location']['name']
-
-
-def get_clan_warlogpublic(id):
-    string = get_clan_tag(id)
-    string = string[1:]
-    response = requests.get('https://api.clashofclans.com/v1/clans/%23' + string, headers=headers)
-    json = response.json();
-    return json['isWarLogPublic']
-
-
-def get_clan_warreq(id):
-    string = get_clan_tag(id)
-    string = string[1:]
-    response = requests.get('https://api.clashofclans.com/v1/clans/%23' + string, headers=headers)
-    json = response.json();
-    return json['requiredTrophies']
-
-
-def get_clan_mem(id):
-    string = get_clan_tag(id)
-    string = string[1:]
-    response = requests.get('https://api.clashofclans.com/v1/clans/%23' + string, headers=headers)
-    json = response.json();
-    return json['members']
-
-
-def get_clan_logo(id):
-    string = get_clan_tag(id)
-    string = string[1:]
-    response = requests.get('https://api.clashofclans.com/v1/clans/%23' + string, headers=headers)
-    json = response.json();
-    return json['badgeUrls']['large']
-
-
-def get_clan_name(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['clan']['name']
-
-
-def get_user(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['name']
-
-
-def get_thall(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['townHallLevel']
-
-
-def get_bhall(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['builderHallLevel']
-
-
-def get_highest_btro(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['bestVersusTrophies']
-
-
-def get_explvl(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['expLevel']
-
-
-def get_trophies(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['trophies']
-
-
-def get_warstars(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['warStars']
-
-
-def get_bk(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['heroes'][0]['level']
-
-
-def get_aq(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['heroes'][1]['level']
-
-
-def get_gw(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['heroes'][2]['level']
-
-
-def get_heroes(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    num = len(user_json['heroes'])
-
-    heroes = ''
-    for x in range(num):
-        if user_json['heroes'][x]['name'] == 'Barbarian King':
-            heroes += "<:BK:822687680915308586> " + str(user_json['heroes'][x]['level'])
-        elif user_json['heroes'][x]['name'] == 'Archer Queen':
-            heroes += " <:AQ:822687698413289512> " + str(user_json['heroes'][x]['level'])
-        elif user_json['heroes'][x]['name'] == 'Grand Warden':
-            heroes += " <:GW:822687710509531156> " + str(user_json['heroes'][x]['level'])
-        elif user_json['heroes'][x]['name'] == 'Royal Champion':
-            heroes += " <:RC:822687723848073227> " + str(user_json['heroes'][x]['level'])
-
-    return heroes
 
 def getheroes(json):
     num = len(json['heroes'])
@@ -385,41 +130,22 @@ def getheroes(json):
 
     return heroes
 
-
-
-def check_bm(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    num = len(user_json['heroes'])
+def check_bm(json):
+    num = len(json['heroes'])
     bm = ''
     for x in range(num):
-        if user_json['heroes'][x]['name'] == 'Battle Machine':
-            bm = "<:bm:862948965129519134>" + '\t' + str(user_json['heroes'][x]['level'])
+        if json['heroes'][x]['name'] == 'Battle Machine':
+            bm = "<:bm:862948965129519134>" + '\t' + str(json['heroes'][x]['level'])
             break
     return bm
 
-
-def get_rc(id):
-    id = id[1:]
-    response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-    user_json = response.json();
-    return user_json['heroes'][3]['level']
-
-
-def get_warlog():
-    response = requests.get('https://api.clashofclans.com/v1/clans/%232PPLYJPG2/warlog', headers=headers)
-    user_json2 = response.json();
-    print(user_json2['name']);
-
-
-def get_dono(id, num):
-    hello = get_clan_tag(id)
-    hello = hello[1:]
-    response = requests.get('https://api.clashofclans.com/v1/clans/%23' + hello + '/members', headers=headers)
-    member = response.json();
-    test = member
-    data = json.loads(json.dumps(test))
+def get_dono(clan_json, num):
+    #hello = get_clan_tag(id)
+    #hello = hello[1:]
+    #response = requests.get('https://api.clashofclans.com/v1/clans/%23' + hello + '/members', headers=headers)
+    #member = response.json();
+    #test = member
+    data = json.loads(json.dumps(clan_json))
     dono = list(range(0, len(data['items'])))
     # dono_2 = list(range(0,num))
     final = ""
@@ -444,15 +170,13 @@ def get_rank(num):
     return string
 
 
-def get_eachmember(id, num):
-    hello = get_clan_tag(id)
-    hello = hello[1:]
-    response = requests.get('https://api.clashofclans.com/v1/clans/%23' + hello + '/members', headers=headers)
-    member = response.json();
-    test = member
-    data = json.loads(json.dumps(test))
+def get_eachmember(clan_json, num):
+    #hello = get_clan_tag(clan_json)
+    #hello = hello[1:]
+    #response = requests.get('https://api.clashofclans.com/v1/clans/%23' + hello + '/members', headers=headers)
+    #member = response.json();
+    data = json.loads(json.dumps(clan_json))
     dono = list(range(0, len(data['items'])))
-    # dono_2 = list(range(0, num))
     final = ""
     for i in range(len(dono)):
         max = i
@@ -465,13 +189,13 @@ def get_eachmember(id, num):
     return final
 
 
-def get_rec(id, num):
-    hello = get_clan_tag(id)
-    hello = hello[1:]
-    response = requests.get('https://api.clashofclans.com/v1/clans/%23' + hello + '/members', headers=headers)
-    member = response.json();
-    test = member
-    data = json.loads(json.dumps(test))
+def get_rec(clan_json, num):
+    #hello = get_clan_tag(id)
+    #hello = hello[1:]
+    #response = requests.get('https://api.clashofclans.com/v1/clans/%23' + hello + '/members', headers=headers)
+    #member = response.json();
+    #test = member
+    data = json.loads(json.dumps(clan_json))
     dono = list(range(0, len(data['items'])))
     # dono_2 = list(range(0, num))
     final = ""
@@ -486,22 +210,22 @@ def get_rec(id, num):
     return final
 
 
-def get_bhall_emoji(tag):
-    if get_bhall(tag) == 1:
+def get_bhall_emoji(json):
+    if json['builderHallLevel'] == 1:
         bhall = "<:b1:862937487093530645>"
-    elif get_bhall(tag) == 2:
+    elif json['builderHallLevel'] == 2:
         bhall = "<:b2:862937487251996673>"
-    elif get_bhall(tag) == 3:
+    elif json['builderHallLevel'] == 3:
         bhall = "<:b3:862937487760293889>"
-    elif get_bhall(tag) == 4:
+    elif json['builderHallLevel'] == 4:
         bhall = "<:b4:862937487931736074>"
-    elif get_bhall(tag) == 5:
+    elif json['builderHallLevel'] == 5:
         bhall = "<:b5:862937487734865931>"
-    elif get_bhall(tag) == 6:
+    elif json['builderHallLevel'] == 6:
         bhall = "<:b6:862937488308699157>"
-    elif get_bhall(tag) == 7:
+    elif json['builderHallLevel'] == 7:
         bhall = "<:b7:862937488633102386>"
-    elif get_bhall(tag) == 8:
+    elif json['builderHallLevel'] == 8:
         bhall = "<:b8:862937488624320563>"
     else:
         bhall = "<:b9:862937488717119488>"
@@ -539,7 +263,7 @@ def get_thall_emoji(json):
         thall = "<:Town_Hall14:833756232375468032>"
     return thall
 
-async def get_prefix(self, ctx):
+async def get_prefix(ctx):
     async with client.pool.acquire() as connection:
         async with connection.transaction():
             prefix = await connection.fetchval("SELECT prefix FROM servers WHERE serverid = $1", ctx.guild.id)
@@ -551,31 +275,6 @@ print('bruh why you not work')
 
 client = commands.Bot(command_prefix=get_prefix, help_command=None)
 
-
-@client.command()
-async def testing(ctx):
-                start_time = time.time()
-                id = '#YG2G8PVV'
-                id = id[1:]
-                response = requests.get('https://api.clashofclans.com/v1/players/%23' + id, headers=headers)
-                user = response.json();
-                exp = user['expLevel']
-                war_stars = user['warStars']
-                trophies = user['trophies']
-                await ctx.send(exp + war_stars + trophies)
-                await ctx.send('Execution time:' + str(round(time.time() - start_time, 3)) + ' seconds')
-
-
-
-@client.command()
-async def testing2(ctx):
-    start_time = time.time()
-    tag = '#YG2G8PVV'
-    await ctx.send(str(get_explvl(tag)) + str(get_warstars(tag)) + str(get_trophies(tag)))
-    await ctx.send('Execution time:' + str(round(time.time() - start_time, 3)) + ' seconds')
-
-
-
 @client.event
 async def on_message(message):
     async with client.pool.acquire() as connection:
@@ -584,6 +283,7 @@ async def on_message(message):
                 prefix = await connection.fetchval("SELECT prefix FROM servers WHERE serverid = $1", message.guild.id)
                 await message.channel.send('The prefix for this server is ' + prefix)
     await client.process_commands(message)
+
 
 @client.event
 async def on_ready():
@@ -605,11 +305,6 @@ async def on_guild_join(guild):
     async with client.pool.acquire() as connection:
         async with connection.transaction():
             await connection.execute("INSERT INTO servers VALUES ($1,'!')", guild.id)
-    #general = find(lambda x: x.name == 'general', guild.text_channels)
-    #if general and general.permissions_for(guild.me).send_messages:
-        #await general.send('Hey! Thanks for inviting ClashHax discord bot to your server.\nUse !help to bring a list of commands')
-
-
 
 
 @client.event
@@ -632,38 +327,44 @@ async def link_clan(ctx):
     async with client.pool.acquire() as connection:
         async with connection.transaction():
             tag = await connection.fetchval("SELECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
+            response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:], headers=headers)
+            user = response.json()
             # tag = await connection.fetchval("SElECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
             if tag is not None:
-                clan_tag = await connection.fetchval("SELECT * FROM servers WHERE $1 = ANY(tag)", get_clan_tag(tag))
+                clan_tag = await connection.fetchval("SELECT * FROM servers WHERE $1 = ANY(tag)", user['clan']['tag'])
                 if clan_tag is not None:
                     await ctx.send("Your clan is already linked to this discord server")
                     return
-                if get_role(tag) == 'leader' or get_role(tag) == 'coLeader' or get_role(tag) == 'admin':
+                if user['role'] == 'leader' or user['role'] == 'coLeader':
                     await connection.execute("UPDATE servers SET tag = array_append(tag,$1) WHERE serverid = $2",
-                                             get_clan_tag(tag), ctx.guild.id)
-                    await ctx.send(get_clan_name(tag) + " has been linked to your server")
+                                             user['clan']['tag'], ctx.guild.id)
+                    await ctx.send(user['clan']['tag'] + " has been linked to your server")
                 else:
                     await ctx.send("You need to be co-leader or leader to use this command")
             else:
                 await ctx.send("Please use the link command before using this!")
 
+
 @client.command()
 async def invite(ctx):
     await ctx.send("The invite link for this discord bot is https://discord.com/api/oauth2/authorize?client_id=815078901574795276&permissions=8&scope=bot")
+
 
 @client.command()
 async def unlink_clan(ctx):
     async with client.pool.acquire() as connection:
         async with connection.transaction():
             tag = await connection.fetchval("SELECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
+            response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:], headers=headers)
+            user = response.json()
             if tag is not None:
-                if get_role(tag) == 'leader' or get_role(tag) == 'coLeader' or get_role(tag) == 'admin':
+                if user['tag'] == 'leader' or user['tag'] == 'coLeader':
                     first = await connection.fetchval("SELECT tag[1] FROM servers WHERE serverid = $1", ctx.guild.id)
                     if first is not None:
                         # await connection.execute("UPDATE players SET tag = array_remove(tag,tag[1]) WHERE discordid = $1"
                         await connection.execute(
                             "UPDATE servers SET tag = array_remove(tag,tag[1]) WHERE serverid = $1", ctx.guild.id)
-                        await ctx.send(get_clan_name(tag) + " has been unlinked from your server")
+                        await ctx.send(user['clan']['tag'] + " has been unlinked from your server")
                     else:
                         await ctx.send("There are no more clans from your server to unlink")
                 else:
@@ -695,9 +396,10 @@ async def link(ctx, tag, token):
     async with client.pool.acquire() as connection:
         async with connection.transaction():
             test = await connection.fetchval("SELECT * FROM players WHERE $1 = ANY(tag)", tag)
-            print(test)
+            response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:], headers=headers)
+            user = response.json()
             if test is not None:
-                await ctx.send(get_user(tag) + " is already linked to this account")
+                await ctx.send(user['name'] + " is already linked to this account")
                 return
             x = link2(tag, token)
             if x is True:
@@ -709,7 +411,7 @@ async def link(ctx, tag, token):
                     await connection.execute("UPDATE players SET tag = array_append(tag,$1) WHERE discordid = $2",
                                              tag, ctx.author.id)
 
-                await ctx.send(get_user(tag) + " has been linked to your discord account!")
+                await ctx.send(user['name'] + " has been linked to your discord account!")
             else:
                 await ctx.send(
                     "Please type in the correct format with the right info. If you need help linking your account, use this command `!link_help`")
@@ -741,31 +443,32 @@ async def player(ctx):
     async with client.pool.acquire() as connection:
         async with connection.transaction():
             tag = await connection.fetchval("SELECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
+            response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:], headers=headers)
+            user = response.json()
             if tag is not None:
-                embed = discord.Embed(title=get_user(tag) + " (" + tag + ")",
+                embed = discord.Embed(title=user['name'] + " (" + tag + ")",
                                       url="https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23" + tag[
                                                                                                                 1:],
                                       color=0x4287f5)
-                if get_role(tag) == 'admin':
+                if user['role'] == 'admin':
                     string = 'elder'
                 else:
-                    string = get_role(tag)
-                des = get_thall_emoji(tag) + "\t" + str(
-                    get_thall(tag)) + "\t<:trophyy:841927127468605450>" + "\t" + str(
-                    get_trophies(tag)) + "\t:crossed_swords:" + "\t" + str(
-                    get_attacks_won(tag)) + "\t" + ":shield:" + "\t" + str(get_defenses_won(tag)) + "\n" + get_heroes(
-                    tag) + "\nHighest Trophies: <:trophyy:841927127468605450>" + "\t" + str(get_highest_trophies(tag))
+                    string = user['role']
+                des = get_thall_emoji(user) + "\t" + str(
+                    user['townHallLevel']) + "\t<:trophyy:841927127468605450>" + "\t" + str(
+                    user['trophies']) + "\t:crossed_swords:" + "\t" + str(
+                    user['attackWins']) + "\t" + ":shield:" + "\t" + str(user['defenseWins']) + "\n" + getheroes(
+                    user) + "\nHighest Trophies: <:trophyy:841927127468605450>" + "\t" + str(user['bestTrophies'])
                 embed.add_field(name='Home Base Info', value=des, inline=False)
-                des = get_bhall_emoji(tag) + "\t" + str(
-                    get_bhall(tag)) + "\t<:btrophy:841926856760360970>" + "\t" + str(
-                    get_bhall_tro(tag)) + "\t" + ":crossed_swords:" + "\t" + str(get_bhall_wins(tag)) + "\t" + check_bm(
-                    tag) + "\nHighest Versus Trophies: <:btrophy:841926856760360970>" + "\t" + str(get_bhall_tro(tag))
+                des = get_bhall_emoji(user) + "\t" + str(
+                    user['builderHallLevel']) + "\t<:btrophy:841926856760360970>" + "\t" + str(
+                    user['versusTrophies']) + "\t" + ":crossed_swords:" + "\t" + str(user['versusBattleWins']) + "\t" + check_bm(
+                    user) + "\nHighest Versus Trophies: <:btrophy:841926856760360970>" + "\t" + str(user['bestVersusTrophies'])
                 embed.add_field(name='Builder Base Info', value=des, inline=False)
                 des = "\n<:exp:819094248498266122>" + str(
-                    get_explvl(tag)) + "\t:star:" + str(get_warstars(tag)) + "\n" + "Donations: " + str(
-                    get_donations(tag)) + "\nReceived: " + str(
-                    get_received(tag)) + "\n" + string.capitalize() + " of " + get_clan_name(
-                    tag)
+                    user['expLevel']) + "\t:star:" + str(user['warStars']) + "\n" + "Donations: " + str(
+                    user['donations']) + "\nReceived: " + str(
+                    user['donationsReceived']) + "\n" + string.capitalize() + " of " + user['clan']['name']
                 embed.add_field(name='General', value=des, inline=False)
                 await ctx.send(embed=embed)
             else:
@@ -779,9 +482,11 @@ async def unlink(ctx):
             tag = await connection.fetchval("SELECT tag FROM players WHERE discordid = $1", ctx.author.id)
             if tag is not None:
                 tag = await connection.fetchval("SElECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
+                response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:], headers=headers)
+                user = response.json()
                 await connection.execute("UPDATE players SET tag = array_remove(tag,tag[1]) WHERE discordid = $1",
                                          ctx.author.id)
-                await ctx.send(get_user(tag) + ' has been unlinked from your discord account')
+                await ctx.send(user['name'] + ' has been unlinked from your discord account')
             else:
                 await ctx.send("Please use the link command first")
             size = await connection.execute("SELECT array_length(tag,1) FROM players WHERE discordid = $1",
@@ -790,7 +495,7 @@ async def unlink(ctx):
                 await connection.execute("DELETE FROM players WHERE discordid = $1", ctx.author.id)
                 await ctx.send("You have no more clash account linked to your discord account!")
 
-
+#complete
 @client.command()
 async def change_main(ctx, tag):
     async with client.pool.acquire() as connection:
@@ -806,7 +511,9 @@ async def change_main(ctx, tag):
                                          ctx.author.id)
                 await connection.execute("UPDATE players SET tag = array_prepend($1,tag) WHERE discordid = $2", tag,
                                          ctx.author.id)
-                await ctx.send("Your active account is now " + get_user(tag))
+                response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:], headers=headers)
+                user = response.json()
+                await ctx.send("Your active account is now " + user['name'])
 
 
 @client.command()
@@ -839,18 +546,22 @@ async def profile(ctx):
             await ctx.send(embed=embed)
 
 
-
 @client.command()
 async def dono_board(ctx):
     start_time = time.time()
     async with client.pool.acquire() as connection:
         async with connection.transaction():
             tag = await connection.fetchval("SElECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
+            response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:], headers=headers)
+            user = response.json()
+            clan_url = (user['clan']['tag'])[1:]
+            response = requests.get('https://api.clashofclans.com/v1/clans/%23' + clan_url + '/members', headers=headers)
+            clan = response.json()
             if tag is not None:
                 embed = discord.Embed(title='Donation Leaderboard', color=0x4287f5)
-                embed.add_field(name='Username', value=get_eachmember(tag, get_clan_mem(tag)), inline=True)
-                embed.add_field(name='Donated', value=get_dono(tag, get_clan_mem(tag)), inline=True)
-                embed.add_field(name='Received', value=get_rec(tag, get_clan_mem(tag)), inline=True)
+                embed.add_field(name='Username', value=get_eachmember(clan, len(clan['items'])), inline=True)
+                embed.add_field(name='Donated', value=get_dono(clan, len(clan['items'])), inline=True)
+                embed.add_field(name='Received', value=get_rec(clan, len(clan['items'])), inline=True)
                 embed.set_footer(text=str(round(time.time() - start_time, 3)) + ' seconds')
                 await ctx.send(embed=embed)
             else:
@@ -862,24 +573,30 @@ async def dono(ctx, *args):
     async with client.pool.acquire() as connection:
         async with connection.transaction():
             tag = await connection.fetchval("SElECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
+            response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:], headers=headers)
+            user = response.json()
+            clan_url = (user['clan']['tag'])[1:]
+            response = requests.get('https://api.clashofclans.com/v1/clans/%23' + clan_url + '/members',
+                                    headers=headers)
+            clan = response.json()
             if tag is not None:
                 embed = discord.Embed(title='Donation Leaderboard', color=0x4287f5)
                 if len(args) == 0:
                     embed.add_field(name='Rank #', value=get_rank(10), inline=True)
-                    embed.add_field(name='Username', value=get_eachmember(tag, 10), inline=True)
-                    embed.add_field(name='Donated', value=get_dono(tag, 10), inline=True)
+                    embed.add_field(name='Username', value=get_eachmember(clan, 10), inline=True)
+                    embed.add_field(name='Donated', value=get_dono(clan, 10), inline=True)
                 elif len(args) == 1:
-                    if int(args[0]) > get_clan_mem(tag):
-                        embed.add_field(name='Rank #', value=get_rank(get_clan_mem(tag)), inline=True)
-                        embed.add_field(name='Username', value=get_eachmember(tag, get_clan_mem(tag)), inline=True)
-                        embed.add_field(name='Donated', value=get_dono(tag, get_clan_mem(tag)))
+                    if int(args[0]) > len(clan['items']):
+                        embed.add_field(name='Rank #', value=get_rank(len(clan['items'])), inline=True)
+                        embed.add_field(name='Username', value=get_eachmember(clan, len(clan['items'])), inline=True)
+                        embed.add_field(name='Donated', value=get_dono(clan, len(clan['items'])))
                     elif int(args[0]) <= 0:
                         await ctx.send("Please pick a valid number")
                         return
                     else:
                         embed.add_field(name='Rank #', value=get_rank(int(args[0])), inline=True)
-                        embed.add_field(name='Username', value=get_eachmember(tag, int(args[0])), inline=True)
-                        embed.add_field(name='Donated', value=get_dono(tag, int(args[0])), inline=True)
+                        embed.add_field(name='Username', value=get_eachmember(clan, int(args[0])), inline=True)
+                        embed.add_field(name='Donated', value=get_dono(clan, int(args[0])), inline=True)
                 await ctx.send(embed=embed)
             else:
                 await ctx.send("Please link your account first before using this command")
@@ -891,26 +608,32 @@ async def clan(ctx):
     async with client.pool.acquire() as connection:
         async with connection.transaction():
             tag = await connection.fetchval("SELECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
+            response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:], headers=headers)
+            user = response.json()
+            clan_url = (user['clan']['tag'])[1:]
+            response = requests.get('https://api.clashofclans.com/v1/clans/%23' + clan_url,
+                                    headers=headers)
+            clan = response.json()
             if tag is not None:
-                if get_clan_warlogpublic(tag) is True:
+                if clan['isWarLogPublic'] is True:
                     warl = ':unlock: Warlog Public'
                 else:
                     warl = ':lock: Warlog Private'
-                embed = discord.Embed(title=get_clan_name(tag) + '   (' + get_clan_tag(tag) + ')', colour=0x4287f5)
-                embed.description = get_clan_des(tag)
+                embed = discord.Embed(title=user['clan']['name'] + '   (' + user['clan']['tag'] + ')', colour=0x4287f5)
+                embed.description = clan['description']
                 embed.add_field(name='Clan Info', value='<:person:841562165928525854>' + str(
-                    get_clan_mem(tag)) + '/50\n<:trophyy:841927127468605450>' + str(
-                    get_clan_tro(tag)) + '\n<:btrophy:841926856760360970>' + str(get_clan_btro(tag)), inline=False)
+                    clan['members']) + '/50\n<:trophyy:841927127468605450>' + str(
+                    clan['clanPoints']) + '\n<:btrophy:841926856760360970>' + str(clan['clanVersusPoints']), inline=False)
                 embed.add_field(name='War Info', value='<:wars:842075407436218368>' + str(
-                    get_clan_warwins(tag)) + ' wars won' + '\n:white_check_mark:' + str(
-                    get_clan_warstreak(tag)) + ' war win streak\n<:medal:842077219890135111>' + str(
-                    get_clan_warleauge(tag)),
+                    clan['warWins']) + ' wars won' + '\n:white_check_mark:' + str(
+                    clan['warWinStreak']) + ' war win streak\n<:medal:842077219890135111>' + str(
+                    clan['warLeague']['name']),
                                 inline=False)
-                embed.add_field(name='Location', value=':earth_africa:' + get_clan_location(tag), inline=False)
+                embed.add_field(name='Location', value=':earth_africa:' + clan['location']['name'], inline=False)
                 embed.add_field(name='Clan Settings',
                                 value=warl + '\n<:trophyy:841927127468605450>' + str(
-                                    get_clan_warreq(tag)) + ' Required')
-                embed.set_thumbnail(url=get_clan_logo(tag))
+                                    clan['requiredTrophies']) + ' Required')
+                embed.set_thumbnail(url=clan['badgeUrls']['large'])
                 embed.timestamp = datetime.utcnow()
                 embed.set_footer(text=str(round(time.time() - start_time, 3)) + ' seconds')
                 await ctx.send(embed=embed)
