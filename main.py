@@ -274,10 +274,13 @@ async def get_prefix(self, ctx):
             return prefix
 
 
-print('bruh why you not work')
 ########################GUGUGUGUGUGUGUGUGUGUGUGU#####################
 
 client = commands.Bot(command_prefix=get_prefix, help_command=None)
+
+for filename in os.listdir('./cogs'):
+    if filename.endswith('.py'):
+        client.load_extension(f'cogs.{filename[:-3]}')
 
 
 @client.event
@@ -425,6 +428,7 @@ async def link(ctx, tag, token):
             await ctx.message.delete()
 
 
+'''
 @client.command()
 async def help(ctx):
     des = """
@@ -442,6 +446,7 @@ async def help(ctx):
     """
     embed = discord.Embed(title="ClashHax Commands", description=des, color=0x4287f5)
     await ctx.send(embed=embed)
+'''
 
 
 @client.command()
