@@ -27,6 +27,24 @@ class Help(commands.Cog):
         embed = discord.Embed(title="ClashHax Commands", description=des, color=0x4287f5)
         await ctx.send(embed=embed)
 
+    @commands.command()
+    async def link_help(self, ctx):
+        embed = discord.Embed(title="Linking Help", color=0x4287f5)
+        embed.add_field(name='\u200b',
+                        value="\nPlease use the command `!link <in-game tag> <api token>`\nExample: `!link #YG2G8PVV 4ed32drw`",
+                        inline=False)
+
+        embed.add_field(name='\nWhere to find in-game tag?',
+                        value="In the image below, the # with a series of letters is your player tag. Also, if you click the little arrow with a square, a pop up with a copy and share button will appear. Clicking copy, will copy your in-game tag to your clipboard. So now you can just paste it.")
+        embed.set_image(url='https://cdn.discordapp.com/attachments/833745316401381419/862161173658206218/IMG_6506.PNG')
+        await ctx.send(embed=embed)
+        embed2 = discord.Embed(title="Linking Help Part 2", color=0x4287f5)
+        embed2.add_field(name='\nWhere to find api token?',
+                         value="Go to account settings and then click more settings. Scroll to the bottom and you'll see the api token Click the show button to the left of it and either use the copy button or type it manually. API token also changes frequently, so if it doesn't work, check the api token again. In the image below, I've circled the api token.")
+        embed2.set_image(
+            url='https://cdn.discordapp.com/attachments/833745316401381419/862172619552587796/IMG_6512_1.PNG')
+        await ctx.send(embed=embed2)
+
 
 def setup(client):
     client.add_cog(Help(client))

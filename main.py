@@ -382,24 +382,6 @@ async def unlink_clan(ctx):
                 await ctx.send("Please use the link command before using this!")
 
 
-@client.command()
-async def link_help(ctx):
-    embed = discord.Embed(title="Linking Help", color=0x4287f5)
-    embed.add_field(name='\u200b',
-                    value="\nPlease use the command `!link <in-game tag> <api token>`\nExample: `!link #YG2G8PVV 4ed32drw`",
-                    inline=False)
-
-    embed.add_field(name='\nWhere to find in-game tag?',
-                    value="In the image below, the # with a series of letters is your player tag. Also, if you click the little arrow with a square, a pop up with a copy and share button will appear. Clicking copy, will copy your in-game tag to your clipboard. So now you can just paste it.")
-    embed.set_image(url='https://cdn.discordapp.com/attachments/833745316401381419/862161173658206218/IMG_6506.PNG')
-    await ctx.send(embed=embed)
-    embed2 = discord.Embed(title="Linking Help Part 2", color=0x4287f5)
-    embed2.add_field(name='\nWhere to find api token?',
-                     value="Go to account settings and then click more settings. Scroll to the bottom and you'll see the api token Click the show button to the left of it and either use the copy button or type it manually. API token also changes frequently, so if it doesn't work, check the api token again. In the image below, I've circled the api token.")
-    embed2.set_image(url='https://cdn.discordapp.com/attachments/833745316401381419/862172619552587796/IMG_6512_1.PNG')
-    await ctx.send(embed=embed2)
-
-
 @client.command(aliases=['linked'])
 async def link(ctx, tag, token):
     async with client.pool.acquire() as connection:
@@ -426,27 +408,6 @@ async def link(ctx, tag, token):
                     "Please type in the correct format with the right info. If you need help linking your account, use this command `!link_help`")
 
             await ctx.message.delete()
-
-
-'''
-@client.command()
-async def help(ctx):
-    des = """
-    `!` is the default prefix. Your server might have changed it, so ping the bot to find out your prefix\n
-    `!prefix <new prefix>` • Changes the prefix of the server to the new prefix\n
-    `!link <in-game tag> <api token>` • Links a clash of clans account to your discord account\n
-    `!link_help` • Gives specific information on how to use the link command\n
-    `!player` • Gives your in-game player information\n
-    `!change_active <in-game tag>` • Use this command to switch your active clash of clans account. Only applies to users with multiple clash accounts linked to their discord\n
-    `!clan` • Gives your in-game clan information\n
-    `!profile` • Gives all your clash of clan accounts linked to your discord\n
-    `!dono_board` • Gives donations and requests of all members in your clan\n
-    `!dono <number>` • The bot will give a top 'number' list of the best donors in your clan\n
-    `!unlink` • Unlinks your active clash of clans account from this discord account
-    """
-    embed = discord.Embed(title="ClashHax Commands", description=des, color=0x4287f5)
-    await ctx.send(embed=embed)
-'''
 
 
 @client.command()
