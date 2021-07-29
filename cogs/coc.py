@@ -254,6 +254,52 @@ class Coc(commands.Cog):
                 else:
                     await ctx.send("Please use the link command first.")
 
+    @commands.command()
+    async def link_clan(self, ctx):
+        async with self.client.pool.acquire() as connection:
+            async with connection.transaction():
+                tag = await connection.fetchval("SELECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
+                response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:], headers=main.headers)
+                user = response.json()
+                # tag = await connection.fetchval("SElECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
+                if tag is not None:
+                    clan_tag = await connection.fetchval("SELECT * FROM servers WHERE $1 = ANY(tag)",
+                                                         user['clan']['tag'])
+                    if clan_tag is not None:
+                        await ctx.send("Your clan is already linked to this discord server")
+                        return
+                    if user['role'] == 'leader' or user['role'] == 'coLeader':
+                        await connection.execute("UPDATE servers SET tag = array_append(tag,$1) WHERE serverid = $2",
+                                                 user['clan']['tag'], ctx.guild.id)
+                        await ctx.send(user['clan']['tag'] + " has been linked to your server")
+                    else:
+                        await ctx.send("You need to be co-leader or leader to use this command")
+                else:
+                    await ctx.send("Please use the link command before using this!")
+
+    @commands.command()
+    async def unlink_clan(self, ctx):
+        async with self.client.pool.acquire() as connection:
+            async with connection.transaction():
+                tag = await connection.fetchval("SELECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
+                response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:], headers=main.headers)
+                user = response.json()
+                if tag is not None:
+                    if user['tag'] == 'leader' or user['tag'] == 'coLeader':
+                        first = await connection.fetchval("SELECT tag[1] FROM servers WHERE serverid = $1",
+                                                          ctx.guild.id)
+                        if first is not None:
+                            # await connection.execute("UPDATE players SET tag = array_remove(tag,tag[1]) WHERE discordid = $1"
+                            await connection.execute(
+                                "UPDATE servers SET tag = array_remove(tag,tag[1]) WHERE serverid = $1", ctx.guild.id)
+                            await ctx.send(user['clan']['tag'] + " has been unlinked from your server")
+                        else:
+                            await ctx.send("There are no more clans from your server to unlink")
+                    else:
+                        await ctx.send("You need to be co-leader or leader to use this command")
+                else:
+                    await ctx.send("Please use the link command before using this!")
+
 
 def setup(client):
     client.add_cog(Coc(client))
