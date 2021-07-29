@@ -5,6 +5,7 @@ import requests
 from discord.ext import commands
 
 import main
+import utils
 
 
 class Coc(commands.Cog):
@@ -23,7 +24,7 @@ class Coc(commands.Cog):
                 if test is not None:
                     await ctx.send(user['name'] + " is already linked to this account")
                     return
-                x = main.link2(tag, token)
+                x = utils.link2(tag, token)
                 if x is True:
                     value = await connection.fetchval("SElECT 1 FROM players WHERE discordid = $1", ctx.author.id)
                     if value is None:
@@ -85,9 +86,9 @@ class Coc(commands.Cog):
                     des = "[" + user[
                         'name'] + '\t' + tag + "](https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23" + tag[
                                                                                                                        1:] + " \"In-Game Profile\")" + "\n<:exp:819094248498266122>" + str(
-                        user['expLevel']) + "   " + main.get_thall_emoji(
+                        user['expLevel']) + "   " + utils.get_thall_emoji(
                         user) + "\t<:trophyy:841927127468605450>" + str(
-                        user['trophies']) + "\t:star:" + str(user['warStars']) + "\n" + main.get_heroes(
+                        user['trophies']) + "\t:star:" + str(user['warStars']) + "\n" + utils.get_heroes(
                         user) + "\n" + string.capitalize() + " of " + user['clan']['name'] + '\n'
                     if i == 1:
                         embed.add_field(name='\u200b', value="*ACTIVE*\n" + des, inline=False)
@@ -132,9 +133,9 @@ class Coc(commands.Cog):
                 clan = response.json()
                 if tag is not None:
                     embed = discord.Embed(title='Donation Leaderboard', color=0x4287f5)
-                    embed.add_field(name='Username', value=main.get_eachmember(clan, len(clan['items'])), inline=True)
-                    embed.add_field(name='Donated', value=main.get_dono(clan, len(clan['items'])), inline=True)
-                    embed.add_field(name='Received', value=main.get_rec(clan, len(clan['items'])), inline=True)
+                    embed.add_field(name='Username', value=utils.get_eachmember(clan, len(clan['items'])), inline=True)
+                    embed.add_field(name='Donated', value=utils.get_dono(clan, len(clan['items'])), inline=True)
+                    embed.add_field(name='Received', value=utils.get_rec(clan, len(clan['items'])), inline=True)
                     embed.set_footer(text=str(round(time.time() - start_time, 3)) + ' seconds')
                     await ctx.send(embed=embed)
                 else:
@@ -154,22 +155,22 @@ class Coc(commands.Cog):
                 if tag is not None:
                     embed = discord.Embed(title='Donation Leaderboard', color=0x4287f5)
                     if len(args) == 0:
-                        embed.add_field(name='Rank #', value=main.get_rank(10), inline=True)
-                        embed.add_field(name='Username', value=main.get_eachmember(clan, 10), inline=True)
-                        embed.add_field(name='Donated', value=main.get_dono(clan, 10), inline=True)
+                        embed.add_field(name='Rank #', value=utils.get_rank(10), inline=True)
+                        embed.add_field(name='Username', value=utils.get_eachmember(clan, 10), inline=True)
+                        embed.add_field(name='Donated', value=utils.get_dono(clan, 10), inline=True)
                     elif len(args) == 1:
                         if int(args[0]) > len(clan['items']):
-                            embed.add_field(name='Rank #', value=main.get_rank(len(clan['items'])), inline=True)
-                            embed.add_field(name='Username', value=main.get_eachmember(clan, len(clan['items'])),
+                            embed.add_field(name='Rank #', value=utils.get_rank(len(clan['items'])), inline=True)
+                            embed.add_field(name='Username', value=utils.get_eachmember(clan, len(clan['items'])),
                                             inline=True)
-                            embed.add_field(name='Donated', value=main.get_dono(clan, len(clan['items'])))
+                            embed.add_field(name='Donated', value=utils.get_dono(clan, len(clan['items'])))
                         elif int(args[0]) <= 0:
                             await ctx.send("Please pick a valid number")
                             return
                         else:
-                            embed.add_field(name='Rank #', value=main.get_rank(int(args[0])), inline=True)
-                            embed.add_field(name='Username', value=main.get_eachmember(clan, int(args[0])), inline=True)
-                            embed.add_field(name='Donated', value=main.get_dono(clan, int(args[0])), inline=True)
+                            embed.add_field(name='Rank #', value=utils.get_rank(int(args[0])), inline=True)
+                            embed.add_field(name='Username', value=utils.get_eachmember(clan, int(args[0])), inline=True)
+                            embed.add_field(name='Donated', value=utils.get_dono(clan, int(args[0])), inline=True)
                     await ctx.send(embed=embed)
                 else:
                     await ctx.send("Please link your account first before using this command")
@@ -230,17 +231,17 @@ class Coc(commands.Cog):
                         string = 'elder'
                     else:
                         string = user['role']
-                    des = main.get_thall_emoji(user) + "\t" + str(
+                    des = utils.get_thall_emoji(user) + "\t" + str(
                         user['townHallLevel']) + "\t<:trophyy:841927127468605450>" + "\t" + str(
                         user['trophies']) + "\t:crossed_swords:" + "\t" + str(
                         user['attackWins']) + "\t" + ":shield:" + "\t" + str(
-                        user['defenseWins']) + "\n" + main.get_heroes(
+                        user['defenseWins']) + "\n" + utils.get_heroes(
                         user) + "\nHighest Trophies: <:trophyy:841927127468605450>" + "\t" + str(user['bestTrophies'])
                     embed.add_field(name='Home Base Info', value=des, inline=False)
-                    des = main.get_bhall_emoji(user) + "\t" + str(
+                    des = utils.get_bhall_emoji(user) + "\t" + str(
                         user['builderHallLevel']) + "\t<:btrophy:841926856760360970>" + "\t" + str(
                         user['versusTrophies']) + "\t" + ":crossed_swords:" + "\t" + str(
-                        user['versusBattleWins']) + "\t" + main.check_bm(
+                        user['versusBattleWins']) + "\t" + utils.check_bm(
                         user) + "\nHighest Versus Trophies: <:btrophy:841926856760360970>" + "\t" + str(
                         user['bestVersusTrophies'])
                     embed.add_field(name='Builder Base Info', value=des, inline=False)
