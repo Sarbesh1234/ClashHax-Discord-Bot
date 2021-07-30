@@ -1,3 +1,4 @@
+import discord
 from discord.ext import commands
 
 
@@ -16,8 +17,10 @@ class Other(commands.Cog):
 
     @commands.command()
     async def invite(self, ctx):
-        await ctx.send(
-            "The invite link for this discord bot is https://discord.com/api/oauth2/authorize?client_id=815078901574795276&permissions=8&scope=bot")
+        embed = discord.Embed(color=0x4287f5)
+        #embed.description = "Click for the bot invite link [here] (https://discord.com/api/oauth2/authorize?client_id=815078901574795276&permissions=8&scope=bot)"
+        embed.description = "[Click here for to invite bot](https://discord.com/api/oauth2/authorize?client_id=815078901574795276&permissions=8&scope=bot)."
+        await ctx.send(embed=embed)
 
 def setup(client):
     client.add_cog(Other(client))
