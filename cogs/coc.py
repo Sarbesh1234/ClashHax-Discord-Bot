@@ -216,7 +216,64 @@ class Coc(commands.Cog):
                     await ctx.send("Please use the link command first before using this command")
 
     @commands.command()
-    async def player(self, ctx):
+    async def player(self, ctx,*args):
+        if len(args) == 1:
+            try:
+                response = requests.get('https://api.clashofclans.com/v1/players/%23' + args[0][1:],
+                                        headers=main.headers)
+                user = response.json()
+                tag = user['tag']
+            except:
+                await ctx.send("Please type a valid id")
+                return
+        elif len(args) == 0:
+            async with self.client.pool.acquire() as connection:
+                async with connection.transaction():
+                    tag = await connection.fetchval("SELECT tag[1] FROM players WHERE discordid = $1",
+                                                    ctx.author.id)
+                    response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:],
+                                            headers=main.headers)
+                    user = response.json()
+                    if tag is None:
+                        await ctx.send("Please use the link command first.")
+                        return
+        else:
+            await ctx.send("Please put either one or two arguments for this command")
+
+        embed = discord.Embed(title=user['name'] + " (" + tag + ")",
+                              url="https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23" + tag[
+                                                                                                        1:],
+                              color=0x4287f5)
+        try:
+            if user['role'] == 'admin':
+                string = 'elder'
+            else:
+                string = user['role']
+            clan_role = string.capitalize() + " of " + user['clan']['name']
+        except:
+            clan_role = "No clan"
+        des = utils.get_thall_emoji(user) + "\t" + str(
+            user['townHallLevel']) + "\t<:trophyy:841927127468605450>" + "\t" + str(
+            user['trophies']) + "\t:crossed_swords:" + "\t" + str(
+            user['attackWins']) + "\t" + ":shield:" + "\t" + str(
+            user['defenseWins']) + "\n" + utils.get_heroes(
+            user) + "\nHighest Trophies: <:trophyy:841927127468605450>" + "\t" + str(user['bestTrophies'])
+        embed.add_field(name='Home Base Info', value=des, inline=False)
+        des = utils.get_bhall_emoji(user) + "\t" + str(
+            user['builderHallLevel']) + "\t<:btrophy:841926856760360970>" + "\t" + str(
+            user['versusTrophies']) + "\t" + ":crossed_swords:" + "\t" + str(
+            user['versusBattleWins']) + "\t" + utils.check_bm(
+            user) + "\nHighest Versus Trophies: <:btrophy:841926856760360970>" + "\t" + str(
+            user['bestVersusTrophies'])
+        embed.add_field(name='Builder Base Info', value=des, inline=False)
+        des = "\n<:exp:819094248498266122>" + str(
+            user['expLevel']) + "\t:star:" + str(user['warStars']) + "\n" + "Donations: " + str(
+            user['donations']) + "\nReceived: " + str(
+            user['donationsReceived']) + "\n" + clan_role
+        embed.add_field(name='General', value=des, inline=False)
+        await ctx.send(embed=embed)
+
+        '''
         async with self.client.pool.acquire() as connection:
             async with connection.transaction():
                 tag = await connection.fetchval("SELECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
@@ -253,7 +310,7 @@ class Coc(commands.Cog):
                     await ctx.send(embed=embed)
                 else:
                     await ctx.send("Please use the link command first.")
-
+            '''
     @commands.command()
     async def link_clan(self, ctx):
         async with self.client.pool.acquire() as connection:

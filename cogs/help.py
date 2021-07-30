@@ -12,16 +12,20 @@ class Help(commands.Cog):
     async def help(self, ctx):
         '''A list of all commands'''
         des = """
-            `!` is the default prefix. Your server might have changed it, so ping the bot to find out your prefix\n
+            `!` is the default prefix. Your server might have changed it, so ping the bot to find out the bot's prefix for your server\n
             `!prefix <new prefix>` • Changes the prefix of the server to the new prefix\n
-            `!link <in-game tag> <api token>` • Links a clash of clans account to your discord account\n
+            `!link <player tag> <api token>` • Links a clash of clans account to your discord account\n
             `!link_help` • Gives specific information on how to use the link command\n
             `!profile` • Gives all your clash of clan accounts linked to your discord\n
-            `!change_active <in-game tag>` • Use this command to switch your active clash of clans account. Only applies to users with multiple clash accounts linked to their discord\n
+            `!change_active <in-game tag>` • Use this command to switch your active clash of clans account\n
             `!player` • Gives your in-game player information\n
+            `!player <player tag>` • Gives in-game player information of the provided player tag\n
             `!clan` • Gives your in-game clan information\n
+            `!clan <clan tag>` • Gives in-game clan information of the provided clan tag\n 
             `!dono_board` • Gives donations and requests of all members in your clan\n
+            `!dono_board <clan tag>` • Gives donations and requests of all members in the provided clan tag\n
             `!dono <number>` • The bot will give a top 'number' list of the best donors in your clan\n
+            `!dono <number> <clan tag>` • The bot will give a top 'number'  list of the best donors of the provided clan tag\n
             `!unlink` • Unlinks your active clash of clans account from this discord account\n
             `!invite` • Gets invite link for the bot
             """
