@@ -120,103 +120,183 @@ class Coc(commands.Cog):
                     await ctx.send("Your active account is now " + user['name'])
 
     @commands.command()
-    async def dono_board(self, ctx):
+    async def dono_board(self, ctx, *args):
         start_time = time.time()
-        async with self.client.pool.acquire() as connection:
-            async with connection.transaction():
-                tag = await connection.fetchval("SElECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
-                response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:], headers=main.headers)
-                user = response.json()
-                clan_url = (user['clan']['tag'])[1:]
-                response = requests.get('https://api.clashofclans.com/v1/clans/%23' + clan_url + '/members',
+        if len(args) == 1:
+            try:
+                response = requests.get('https://api.clashofclans.com/v1/clans/%23' + args[0][1:] + '/members',
                                         headers=main.headers)
                 clan = response.json()
-                if tag is not None:
-                    embed = discord.Embed(title='Donation Leaderboard', color=0x4287f5)
-                    embed.add_field(name='Username', value=utils.get_eachmember(clan, len(clan['items'])), inline=True)
-                    embed.add_field(name='Donated', value=utils.get_dono(clan, len(clan['items'])), inline=True)
-                    embed.add_field(name='Received', value=utils.get_rec(clan, len(clan['items'])), inline=True)
-                    embed.set_footer(text=str(round(time.time() - start_time, 3)) + ' seconds')
-                    await ctx.send(embed=embed)
-                else:
-                    await ctx.send("Please use the link command first before using this command")
+                first_name = clan['items'][0]['name']
+            except:
+                await ctx.send("Please type a valid clan id")
+                return
+        elif len(args) == 0:
+            async with self.client.pool.acquire() as connection:
+                async with connection.transaction():
+                    tag = await connection.fetchval("SElECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
+                    if tag is None:
+                        await ctx.send("Please use the link command first before using this command")
+                        return
+                    response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:],
+                                            headers=main.headers)
+                    user = response.json()
+
+                    try:
+                        clan_url = (user['clan']['tag'])[1:]
+                    except:
+                        await ctx.send('No information can be provided as you are not in a clan. If you want to search for a clan, use `!clan <clan tag>` command')
+                        return
+                    response = requests.get('https://api.clashofclans.com/v1/clans/%23' + clan_url + '/members',
+                                            headers=main.headers)
+                    clan = response.json()
+        else:
+            await ctx.send("Please put either one or two arguments for this command")
+            return
+
+        embed = discord.Embed(title='Donation Leaderboard', color=0x4287f5)
+        embed.add_field(name='Username', value=utils.get_eachmember(clan, len(clan['items'])), inline=True)
+        embed.add_field(name='Donated', value=utils.get_dono(clan, len(clan['items'])), inline=True)
+        embed.add_field(name='Received', value=utils.get_rec(clan, len(clan['items'])), inline=True)
+        embed.set_footer(text=str(round(time.time() - start_time, 3)) + ' seconds')
+        await ctx.send(embed=embed)
 
     @commands.command()
     async def dono(self, ctx, *args):
         async with self.client.pool.acquire() as connection:
             async with connection.transaction():
                 tag = await connection.fetchval("SElECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
+                if tag is None:
+                    await ctx.send("Please link your account first before using this command")
+                    return
+
                 response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:], headers=main.headers)
                 user = response.json()
-                clan_url = (user['clan']['tag'])[1:]
+                try:
+                    clan_url = (user['clan']['tag'])[1:]
+                except:
+                    await ctx.send(
+                        'No information can be provided as you are not in a clan. If you want to search for a clan, use `!clan <clan tag>` command')
+                    return
                 response = requests.get('https://api.clashofclans.com/v1/clans/%23' + clan_url + '/members',
                                         headers=main.headers)
                 clan = response.json()
-                if tag is not None:
-                    embed = discord.Embed(title='Donation Leaderboard', color=0x4287f5)
-                    if len(args) == 0:
-                        embed.add_field(name='Rank #', value=utils.get_rank(10), inline=True)
-                        embed.add_field(name='Username', value=utils.get_eachmember(clan, 10), inline=True)
-                        embed.add_field(name='Donated', value=utils.get_dono(clan, 10), inline=True)
-                    elif len(args) == 1:
-                        if int(args[0]) > len(clan['items']):
-                            embed.add_field(name='Rank #', value=utils.get_rank(len(clan['items'])), inline=True)
-                            embed.add_field(name='Username', value=utils.get_eachmember(clan, len(clan['items'])),
-                                            inline=True)
-                            embed.add_field(name='Donated', value=utils.get_dono(clan, len(clan['items'])))
-                        elif int(args[0]) <= 0:
-                            await ctx.send("Please pick a valid number")
-                            return
-                        else:
-                            embed.add_field(name='Rank #', value=utils.get_rank(int(args[0])), inline=True)
-                            embed.add_field(name='Username', value=utils.get_eachmember(clan, int(args[0])), inline=True)
-                            embed.add_field(name='Donated', value=utils.get_dono(clan, int(args[0])), inline=True)
-                    await ctx.send(embed=embed)
+                embed = discord.Embed(title='Donation Leaderboard', color=0x4287f5)
+                if len(args) == 0:
+                    embed.add_field(name='Rank #', value=utils.get_rank(10), inline=True)
+                    embed.add_field(name='Username', value=utils.get_eachmember(clan, 10), inline=True)
+                    embed.add_field(name='Donated', value=utils.get_dono(clan, 10), inline=True)
+                elif len(args) == 1:
+                    try:
+                        print(isinstance(int(args[0]), int))
+                    except:
+                        await ctx.send("Please type a number as the second argument")
+                        return
+                    if int(args[0]) > len(clan['items']):
+                        embed.add_field(name='Rank #', value=utils.get_rank(len(clan['items'])), inline=True)
+                        embed.add_field(name='Username', value=utils.get_eachmember(clan, len(clan['items'])),
+                                        inline=True)
+                        embed.add_field(name='Donated', value=utils.get_dono(clan, len(clan['items'])))
+                    elif int(args[0]) <= 0:
+                        await ctx.send("Please pick a valid number")
+                        return
+                    else:
+                        embed.add_field(name='Rank #', value=utils.get_rank(int(args[0])), inline=True)
+                        embed.add_field(name='Username', value=utils.get_eachmember(clan, int(args[0])), inline=True)
+                        embed.add_field(name='Donated', value=utils.get_dono(clan, int(args[0])), inline=True)
+                elif len(args) == 2:
+                    try:
+                        print(isinstance(int(args[0]), int))
+                    except:
+                        await ctx.send("Please type a number as the second argument")
+                        return
+                    try:
+                        response = requests.get('https://api.clashofclans.com/v1/clans/%23' + args[1][1:] + '/members',
+                                                headers=main.headers)
+                        clan = response.json()
+                        first_name = clan['items'][0]['name']
+                    except:
+                        await ctx.send("Please type a valid clan id")
+                        return
+                    if int(args[0]) > len(clan['items']):
+                        embed.add_field(name='Rank #', value=utils.get_rank(len(clan['items'])), inline=True)
+                        embed.add_field(name='Username', value=utils.get_eachmember(clan, len(clan['items'])),
+                                        inline=True)
+                        embed.add_field(name='Donated', value=utils.get_dono(clan, len(clan['items'])))
+                    elif int(args[0]) <= 0:
+                        await ctx.send("Please pick a valid number")
+                        return
+                    else:
+                        embed.add_field(name='Rank #', value=utils.get_rank(int(args[0])), inline=True)
+                        embed.add_field(name='Username', value=utils.get_eachmember(clan, int(args[0])), inline=True)
+                        embed.add_field(name='Donated', value=utils.get_dono(clan, int(args[0])), inline=True)
+
                 else:
-                    await ctx.send("Please link your account first before using this command")
+                    await ctx.send("Please put either one or two arguments for this command")
+                    return
+                await ctx.send(embed=embed)
 
     @commands.command()
-    async def clan(self, ctx):
+    async def clan(self, ctx, *args):
         start_time = time.time()
-        async with self.client.pool.acquire() as connection:
-            async with connection.transaction():
-                tag = await connection.fetchval("SELECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
-                response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:], headers=main.headers)
-                user = response.json()
-                clan_url = (user['clan']['tag'])[1:]
-                response = requests.get('https://api.clashofclans.com/v1/clans/%23' + clan_url,
+        if len(args) == 1:
+            try:
+                response = requests.get('https://api.clashofclans.com/v1/clans/%23' + args[0][1:],
                                         headers=main.headers)
                 clan = response.json()
-                if tag is not None:
-                    if clan['isWarLogPublic'] is True:
-                        warl = ':unlock: Warlog Public'
-                    else:
-                        warl = ':lock: Warlog Private'
-                    embed = discord.Embed(title=user['clan']['name'] + '   (' + user['clan']['tag'] + ')',
-                                          colour=0x4287f5)
-                    embed.description = clan['description']
-                    embed.add_field(name='Clan Info', value='<:person:841562165928525854>' + str(
-                        clan['members']) + '/50\n<:trophyy:841927127468605450>' + str(
-                        clan['clanPoints']) + '\n<:btrophy:841926856760360970>' + str(clan['clanVersusPoints']),
-                                    inline=False)
-                    embed.add_field(name='War Info', value='<:wars:842075407436218368>' + str(
-                        clan['warWins']) + ' wars won' + '\n:white_check_mark:' + str(
-                        clan['warWinStreak']) + ' war win streak\n<:medal:842077219890135111>' + str(
-                        clan['warLeague']['name']),
-                                    inline=False)
-                    embed.add_field(name='Location', value=':earth_africa:' + clan['location']['name'], inline=False)
-                    embed.add_field(name='Clan Settings',
-                                    value=warl + '\n<:trophyy:841927127468605450>' + str(
-                                        clan['requiredTrophies']) + ' Required')
-                    embed.set_thumbnail(url=clan['badgeUrls']['large'])
-                    embed.timestamp = datetime.utcnow()
-                    embed.set_footer(text=str(round(time.time() - start_time, 3)) + ' seconds')
-                    await ctx.send(embed=embed)
-                else:
-                    await ctx.send("Please use the link command first before using this command")
+                name = clan['name']
+            except:
+                await ctx.send("Please type a valid clan id")
+                return
+        elif len(args) == 0:
+            async with self.client.pool.acquire() as connection:
+                async with connection.transaction():
+                    tag = await connection.fetchval("SELECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
+                    if tag is None:
+                        await ctx.send("Please use the link command first before using this command")
+                        return
+                    response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:],
+                                            headers=main.headers)
+                    user = response.json()
+                    try:
+                        clan_url = (user['clan']['tag'])[1:]
+                    except:
+                        await ctx.send('No information can be provided as you are not in a clan. If you want to search for a clan, use `!clan <clan tag>` command')
+                        return
+                    response = requests.get('https://api.clashofclans.com/v1/clans/%23' + clan_url,
+                                            headers=main.headers)
+                    clan = response.json()
+        else:
+            await ctx.send("Please put either one or two arguments for this command")
+            return
+
+        if clan['isWarLogPublic'] is True:
+            warl = ':unlock: Warlog Public'
+        else:
+            warl = ':lock: Warlog Private'
+        embed = discord.Embed(title=clan['name'] + '   (' + clan['tag'] + ')',
+                              colour=0x4287f5)
+        embed.description = clan['description']
+        embed.add_field(name='Clan Info', value='<:person:841562165928525854>' + str(
+            clan['members']) + '/50\n<:trophyy:841927127468605450>' + str(
+            clan['clanPoints']) + '\n<:btrophy:841926856760360970>' + str(clan['clanVersusPoints']),
+                        inline=False)
+        embed.add_field(name='War Info', value='<:wars:842075407436218368>' + str(
+            clan['warWins']) + ' wars won' + '\n:white_check_mark:' + str(
+            clan['warWinStreak']) + ' war win streak\n<:medal:842077219890135111>' + str(
+            clan['warLeague']['name']),
+                        inline=False)
+        embed.add_field(name='Location', value=':earth_africa:' + clan['location']['name'], inline=False)
+        embed.add_field(name='Clan Settings',
+                        value=warl + '\n<:trophyy:841927127468605450>' + str(
+                            clan['requiredTrophies']) + ' Required')
+        embed.set_thumbnail(url=clan['badgeUrls']['large'])
+        embed.timestamp = datetime.utcnow()
+        embed.set_footer(text=str(round(time.time() - start_time, 3)) + ' seconds')
+        await ctx.send(embed=embed)
 
     @commands.command()
-    async def player(self, ctx,*args):
+    async def player(self, ctx, *args):
         if len(args) == 1:
             try:
                 response = requests.get('https://api.clashofclans.com/v1/players/%23' + args[0][1:],
@@ -224,21 +304,22 @@ class Coc(commands.Cog):
                 user = response.json()
                 tag = user['tag']
             except:
-                await ctx.send("Please type a valid id")
+                await ctx.send("Please type a valid player id")
                 return
         elif len(args) == 0:
             async with self.client.pool.acquire() as connection:
                 async with connection.transaction():
                     tag = await connection.fetchval("SELECT tag[1] FROM players WHERE discordid = $1",
                                                     ctx.author.id)
-                    response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:],
-                                            headers=main.headers)
-                    user = response.json()
                     if tag is None:
                         await ctx.send("Please use the link command first.")
                         return
+                    response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:],
+                                            headers=main.headers)
+                    user = response.json()
         else:
             await ctx.send("Please put either one or two arguments for this command")
+            return
 
         embed = discord.Embed(title=user['name'] + " (" + tag + ")",
                               url="https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23" + tag[
@@ -273,44 +354,7 @@ class Coc(commands.Cog):
         embed.add_field(name='General', value=des, inline=False)
         await ctx.send(embed=embed)
 
-        '''
-        async with self.client.pool.acquire() as connection:
-            async with connection.transaction():
-                tag = await connection.fetchval("SELECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
-                response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:], headers=main.headers)
-                user = response.json()
-                if tag is not None:
-                    embed = discord.Embed(title=user['name'] + " (" + tag + ")",
-                                          url="https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23" + tag[
-                                                                                                                    1:],
-                                          color=0x4287f5)
-                    if user['role'] == 'admin':
-                        string = 'elder'
-                    else:
-                        string = user['role']
-                    des = utils.get_thall_emoji(user) + "\t" + str(
-                        user['townHallLevel']) + "\t<:trophyy:841927127468605450>" + "\t" + str(
-                        user['trophies']) + "\t:crossed_swords:" + "\t" + str(
-                        user['attackWins']) + "\t" + ":shield:" + "\t" + str(
-                        user['defenseWins']) + "\n" + utils.get_heroes(
-                        user) + "\nHighest Trophies: <:trophyy:841927127468605450>" + "\t" + str(user['bestTrophies'])
-                    embed.add_field(name='Home Base Info', value=des, inline=False)
-                    des = utils.get_bhall_emoji(user) + "\t" + str(
-                        user['builderHallLevel']) + "\t<:btrophy:841926856760360970>" + "\t" + str(
-                        user['versusTrophies']) + "\t" + ":crossed_swords:" + "\t" + str(
-                        user['versusBattleWins']) + "\t" + utils.check_bm(
-                        user) + "\nHighest Versus Trophies: <:btrophy:841926856760360970>" + "\t" + str(
-                        user['bestVersusTrophies'])
-                    embed.add_field(name='Builder Base Info', value=des, inline=False)
-                    des = "\n<:exp:819094248498266122>" + str(
-                        user['expLevel']) + "\t:star:" + str(user['warStars']) + "\n" + "Donations: " + str(
-                        user['donations']) + "\nReceived: " + str(
-                        user['donationsReceived']) + "\n" + string.capitalize() + " of " + user['clan']['name']
-                    embed.add_field(name='General', value=des, inline=False)
-                    await ctx.send(embed=embed)
-                else:
-                    await ctx.send("Please use the link command first.")
-            '''
+
     @commands.command()
     async def link_clan(self, ctx):
         async with self.client.pool.acquire() as connection:
