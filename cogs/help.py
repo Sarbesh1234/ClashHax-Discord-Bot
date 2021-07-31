@@ -12,12 +12,12 @@ class Help(commands.Cog):
     async def help(self, ctx):
         '''A list of all commands'''
         des = """
-            `!` is the default prefix. Your server might have changed it, so ping the bot to find out the bot's prefix for your server\n
+            `!` is the default prefix. Your server might have changed it, so ping the bot to find out the bot's prefix for your server. If you still need help, join the [support server](https://discord.gg/GSvXNT5rSu).\n
             `!prefix <new prefix>` • Changes the prefix of the server to the new prefix\n
             `!link <player tag> <api token>` • Links a clash of clans account to your discord account\n
             `!link_help` • Gives specific information on how to use the link command\n
             `!profile` • Gives all your clash of clan accounts linked to your discord\n
-            `!change_active <in-game tag>` • Use this command to switch your active clash of clans account\n
+            `!change_active <player tag>` • Use this command to switch your active clash of clans account\n
             `!player` • Gives your in-game player information\n
             `!player <player tag>` • Gives in-game player information of the provided player tag\n
             `!clan` • Gives your in-game clan information\n

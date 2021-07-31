@@ -69,7 +69,7 @@ class Coc(commands.Cog):
             async with connection.transaction():
                 size = await connection.fetchval("SELECT array_length(tag,1) FROM players WHERE discordid = $1",
                                                  ctx.author.id)
-                if size == 0:
+                if size is None:
                     await ctx.send("Please use the link command first before using this command")
                     return
                 embed = discord.Embed(title="ClashHax Profile", color=0x4287f5)
@@ -79,17 +79,21 @@ class Coc(commands.Cog):
                     response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:],
                                             headers=main.headers)
                     user = response.json()
-                    if user['role'] == 'admin':
-                        string = 'elder'
-                    else:
-                        string = user['role']
+                    try:
+                        if user['role'] == 'admin':
+                            string = 'elder'
+                        else:
+                            string = user['role']
+                        clan_role = string.capitalize() + " of " + user['clan']['name']
+                    except:
+                        clan_role = "No clan"
                     des = "[" + user[
                         'name'] + '\t' + tag + "](https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=%23" + tag[
                                                                                                                        1:] + " \"In-Game Profile\")" + "\n<:exp:819094248498266122>" + str(
                         user['expLevel']) + "   " + utils.get_thall_emoji(
                         user) + "\t<:trophyy:841927127468605450>" + str(
                         user['trophies']) + "\t:star:" + str(user['warStars']) + "\n" + utils.get_heroes(
-                        user) + "\n" + string.capitalize() + " of " + user['clan']['name'] + '\n'
+                        user) + "\n" + clan_role + '\n'
                     if i == 1:
                         embed.add_field(name='\u200b', value="*ACTIVE*\n" + des, inline=False)
                     else:
