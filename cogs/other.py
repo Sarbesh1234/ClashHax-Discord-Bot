@@ -9,11 +9,17 @@ class Other(commands.Cog):
         self.client = client
 
     @commands.command()
+    @commands.has_permissions(manage_guild=True)
     async def prefix(self, ctx, arg):
         async with self.client.pool.acquire() as connection:
             async with connection.transaction():
                 await connection.execute("UPDATE servers SET prefix = $1 WHERE serverid = $2", arg, ctx.guild.id)
                 await ctx.send("ClashHax prefix for this server has been changed to " + arg)
+
+    @prefix.error
+    async def prefix_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.send("Manage Servers permission is required to use this command")
 
     @commands.command()
     async def invite(self, ctx):
