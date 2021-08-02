@@ -169,22 +169,34 @@ class Coc(commands.Cog):
     async def dono(self, ctx, *args):
         async with self.client.pool.acquire() as connection:
             async with connection.transaction():
-                tag = await connection.fetchval("SElECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
-                if tag is None:
-                    await ctx.send("Please link your account first before using this command")
-                    return
+                if len(args) == 0 or len(args) == 1:
 
-                response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:], headers=main.headers)
-                user = response.json()
-                try:
-                    clan_url = (user['clan']['tag'])[1:]
-                except:
-                    await ctx.send(
-                        'No information can be provided as you are not in a clan. If you want to search for a clan, use `!clan <clan tag>` command')
-                    return
-                response = requests.get('https://api.clashofclans.com/v1/clans/%23' + clan_url + '/members',
-                                        headers=main.headers)
-                clan = response.json()
+                    tag = await connection.fetchval("SElECT tag[1] FROM players WHERE discordid = $1", ctx.author.id)
+                    if tag is None:
+                        await ctx.send("Please link your account first before using this command")
+                        return
+
+                    response = requests.get('https://api.clashofclans.com/v1/players/%23' + tag[1:], headers=main.headers)
+                    user = response.json()
+                    try:
+                        clan_url = (user['clan']['tag'])[1:]
+                    except:
+                        await ctx.send(
+                            'No information can be provided as you are not in a clan. If you want to search for a clan, use `!clan <clan tag>` command')
+                        return
+                    response = requests.get('https://api.clashofclans.com/v1/clans/%23' + clan_url + '/members',
+                                            headers=main.headers)
+                    clan = response.json()
+                elif len(args) == 2:
+                    try:
+                        response = requests.get('https://api.clashofclans.com/v1/clans/%23' + args[1][1:] + '/members',
+                                                headers=main.headers)
+                        clan = response.json()
+                        first_name = clan['items'][0]['name']
+                    except:
+                        await ctx.send("Please type a valid clan id")
+                        return
+
                 embed = discord.Embed(title='Donation Leaderboard', color=0x4287f5)
                 if len(args) == 0:
                     embed.add_field(name='Rank #', value=utils.get_rank(10), inline=True)
