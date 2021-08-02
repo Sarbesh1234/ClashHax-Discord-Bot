@@ -36,10 +36,10 @@ class Help(commands.Cog):
     async def link_help(self, ctx):
         embed = discord.Embed(title="Linking Help", color=0x4287f5)
         embed.add_field(name='\u200b',
-                        value="\nPlease use the command `!link <in-game tag> <api token>`\nExample: `!link #YG2G8PVV 4ed32drw`",
+                        value="\nPlease use the command `!link <player tag> <api token>`\nExample: `!link #YG2G8PVV 4ed32drw`",
                         inline=False)
 
-        embed.add_field(name='\nWhere to find in-game tag?',
+        embed.add_field(name='\nWhere to find player tag?',
                         value="In the image below, the # with a series of letters is your player tag. Also, if you click the little arrow with a square, a pop up with a copy and share button will appear. Clicking copy, will copy your in-game tag to your clipboard. So now you can just paste it.")
         embed.set_image(url='https://cdn.discordapp.com/attachments/833745316401381419/862161173658206218/IMG_6506.PNG')
         await ctx.send(embed=embed)
