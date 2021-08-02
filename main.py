@@ -2,6 +2,7 @@ import asyncio
 import asyncpg
 import os
 import socket
+import discord
 from dotenv import load_dotenv
 from discord.ext import commands
 
@@ -34,8 +35,8 @@ async def get_prefix(self, ctx):
             prefix = await connection.fetchval("SELECT prefix FROM servers WHERE serverid = $1", ctx.guild.id)
             return prefix
 
-
-client = commands.Bot(command_prefix=get_prefix, help_command=None)
+intents = discord.Intents(messages=True, members=True, guilds=True, guild_messages=True)
+client = commands.Bot(intents=intents, command_prefix=get_prefix, help_command=None)
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
