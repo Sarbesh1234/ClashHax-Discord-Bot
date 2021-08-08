@@ -63,6 +63,7 @@ class Coc(commands.Cog):
                     await ctx.send("You have no more clash account linked to your discord account!")
 
     @commands.command()
+    @commands.bot_has_permissions(embed_links=True, use_external_emojis=True)
     async def profile(self, ctx):
         start_time = time.time()
         async with self.client.pool.acquire() as connection:
@@ -101,6 +102,11 @@ class Coc(commands.Cog):
                     embed.set_footer(text=str(round(time.time() - start_time, 3)) + ' seconds')
                 await ctx.send(embed=embed)
 
+    @profile.error
+    async def profile_error(self, ctx, error):
+        if isinstance(error, commands.BotMissingPermissions):
+            await ctx.send(error)
+
     @commands.command()
     async def change_active(self, ctx, tag):
         async with self.client.pool.acquire() as connection:
@@ -124,6 +130,7 @@ class Coc(commands.Cog):
                     await ctx.send("Your active account is now " + user['name'])
 
     @commands.command()
+    @commands.bot_has_permissions(embed_links=True)
     async def dono_board(self, ctx, *args):
         start_time = time.time()
         if len(args) == 1:
@@ -165,7 +172,13 @@ class Coc(commands.Cog):
         embed.set_footer(text=str(round(time.time() - start_time, 3)) + ' seconds')
         await ctx.send(embed=embed)
 
+    @dono_board.error
+    async def dono_board_error(self, ctx, error):
+        if isinstance(error, commands.BotMissingPermissions):
+            await ctx.send(error)
+
     @commands.command()
+    @commands.bot_has_permissions(embed_links=True)
     async def dono(self, ctx, *args):
         async with self.client.pool.acquire() as connection:
             async with connection.transaction():
@@ -252,7 +265,13 @@ class Coc(commands.Cog):
                     return
                 await ctx.send(embed=embed)
 
+    @dono.error
+    async def dono_error(self, ctx, error):
+        if isinstance(error, commands.BotMissingPermissions):
+            await ctx.send(error)
+
     @commands.command()
+    @commands.bot_has_permissions(embed_links=True, use_external_emojis=True)
     async def clan(self, ctx, *args):
         start_time = time.time()
         if len(args) == 1:
@@ -311,7 +330,13 @@ class Coc(commands.Cog):
         embed.set_footer(text=str(round(time.time() - start_time, 3)) + ' seconds')
         await ctx.send(embed=embed)
 
+    @clan.error
+    async def clan_error(self, ctx, error):
+        if isinstance(error, commands.BotMissingPermissions):
+            await ctx.send(error)
+
     @commands.command()
+    @commands.bot_has_permissions(embed_links=True, use_external_emojis=True)
     async def player(self, ctx, *args):
         if len(args) == 1:
             try:
@@ -369,6 +394,11 @@ class Coc(commands.Cog):
             user['donationsReceived']) + "\n" + clan_role
         embed.add_field(name='General', value=des, inline=False)
         await ctx.send(embed=embed)
+
+    @player.error
+    async def player_error(self, ctx, error):
+        if isinstance(error, commands.BotMissingPermissions):
+            await ctx.send(error)
 
 
     @commands.command()

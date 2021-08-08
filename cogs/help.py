@@ -9,6 +9,7 @@ class Help(commands.Cog):
         self.client = client
 
     @commands.command()
+    @commands.bot_has_permissions(embed_links=True)
     async def help(self, ctx):
         '''A list of all commands'''
         des = """
@@ -32,7 +33,13 @@ class Help(commands.Cog):
         embed = discord.Embed(title="ClashHax Commands", description=des, color=0x4287f5)
         await ctx.send(embed=embed)
 
+    @help.error
+    async def help_error(self, ctx, error):
+        if isinstance(error, commands.BotMissingPermissions):
+            await ctx.send(error)
+
     @commands.command()
+    @commands.bot_has_permissions(embed_links=True)
     async def link_help(self, ctx):
         embed = discord.Embed(title="Linking Help", color=0x4287f5)
         embed.add_field(name='\u200b',
@@ -49,6 +56,11 @@ class Help(commands.Cog):
         embed2.set_image(
             url='https://cdn.discordapp.com/attachments/833745316401381419/862172619552587796/IMG_6512_1.PNG')
         await ctx.send(embed=embed2)
+
+    @link_help.error
+    async def link_help_error(self, ctx, error):
+        if isinstance(error, commands.BotMissingPermissions):
+            await ctx.send(error)
 
 
 def setup(client):
