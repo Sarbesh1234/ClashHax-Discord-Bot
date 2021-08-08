@@ -19,7 +19,7 @@ class Other(commands.Cog):
     @prefix.error
     async def prefix_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
-            await ctx.send("Manage Servers permission is required to use this command")
+            await ctx.send(error)
 
     @commands.command()
     @commands.bot_has_permissions(embed_links=True)
@@ -29,10 +29,12 @@ class Other(commands.Cog):
         embed.description = "[Click here for to invite bot](https://discord.com/api/oauth2/authorize?client_id=815078901574795276&permissions=281600&scope=bot)."
         await ctx.send(embed=embed)
 
-    @commands.error
+    @invite.error
     async def invite_error(self, ctx, error):
         if isinstance(error,commands.BotMissingPermissions):
-            await ctx.send("Embed link permissions are required to use this command")
+            await ctx.send(error)
+            print(error)
+
 
 def setup(client):
     client.add_cog(Other(client))
