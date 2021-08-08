@@ -22,11 +22,17 @@ class Other(commands.Cog):
             await ctx.send("Manage Servers permission is required to use this command")
 
     @commands.command()
+    @commands.bot_has_permissions(embed_links=True)
     async def invite(self, ctx):
         embed = discord.Embed(color=0x4287f5)
         #embed.description = "Click for the bot invite link [here] (https://discord.com/api/oauth2/authorize?client_id=815078901574795276&permissions=8&scope=bot)"
-        embed.description = "[Click here for to invite bot](https://discord.com/api/oauth2/authorize?client_id=815078901574795276&permissions=8&scope=bot)."
+        embed.description = "[Click here for to invite bot](https://discord.com/api/oauth2/authorize?client_id=815078901574795276&permissions=281600&scope=bot)."
         await ctx.send(embed=embed)
+
+    @commands.error
+    async def invite_error(self, ctx, error):
+        if isinstance(error,commands.BotMissingPermissions):
+            await ctx.send("Embed link permissions are required to use this command")
 
 def setup(client):
     client.add_cog(Other(client))

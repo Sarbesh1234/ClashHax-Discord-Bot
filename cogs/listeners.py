@@ -22,7 +22,6 @@ class Listeners(commands.Cog):
         print('Bot is ready.')
 
     @commands.Cog.listener()
-    #@commands.bot_has_permissions(=True)
     async def on_guild_join(self, guild):
         async with self.client.pool.acquire() as connection:
             async with connection.transaction():
