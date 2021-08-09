@@ -6,7 +6,6 @@ import discord
 from dotenv import load_dotenv
 from discord.ext import commands
 
-
 hostname = socket.gethostname()
 ip_address = socket.gethostbyname(hostname)
 load_dotenv('discord.env')
