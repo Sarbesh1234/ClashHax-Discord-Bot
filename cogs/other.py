@@ -26,7 +26,7 @@ class Other(commands.Cog):
     async def invite(self, ctx):
         embed = discord.Embed(color=0x4287f5)
         #embed.description = "Click for the bot invite link [here] (https://discord.com/api/oauth2/authorize?client_id=815078901574795276&permissions=8&scope=bot)"
-        embed.description = "[Click here for to invite bot](https://discord.com/api/oauth2/authorize?client_id=815078901574795276&permissions=281600&scope=bot)."
+        embed.description = "[Click here for to invite bot](https://discord.com/api/oauth2/authorize?client_id=815078901574795276&permissions=289792&scope=bot)."
         await ctx.send(embed=embed)
 
     @invite.error
